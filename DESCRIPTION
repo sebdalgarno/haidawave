@@ -1,10 +1,20 @@
 Package: HGfetch
 Title: Calculate Wave Exposure
 Version: 0.0.0.9000
-Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
-Description: Calculates wave exposure based on fetch and wind. 
+Date: 2017-01-18
+Authors@R: c(
+    person("Sebastian", "Dalgarno", email = "seb.dalgarno@gmail.com", role = c("aut", "cre")),
+    person("Joe", "Thorley", email = "joe@poissonconsulting.ca", role = "aut"))
+Description: Calculates wave exposure based on fetch and wind.
     Includes data for Haida Gwaii.
-Depends: R (>= 3.3.2)
-License: What license is it under?
+Depends:
+    R (>= 3.3.1)
+Imports:
+    rgdal,
+    sp,
+    rgeos,
+    plyr
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
+RoxygenNote: 5.0.1

@@ -1,9 +1,3 @@
-library(rgdal)
-library(sp)
-library(rgeos)
-library(plyr)
-setwd("~/Google_Drive/Data")
-
 ### load fetch data
 hgfetch=read.csv('wave_exposure/Vector_fetch/txt_files/fetch_calcs/haida.gwaii.fetch.5.csv')
 ### load wind data
@@ -15,19 +9,19 @@ fetred <- hgfetch[sample(nrow(hgfetch),50000),]
 winred <- hgwind[sample(nrow(hgwind),50000),]
 
 ### 5 functions comprising R package "..."
-# ConvertProj - takes any data with coordinates and converts to SpatialPointsDataFrame Class Object (sp) of user-defined projection. 
+# ConvertProj - takes any data with coordinates and converts to SpatialPointsDataFrame Class Object (sp) of user-defined projection.
               # default converts lon/lat (WGS84) to BC Albers
               # option to keep original lat/lon columns, option to not convert to SpatialPointsDataFrame
-# NearestPt   - Find nearest point and distance to that point from any two sets of point data (must be SpatialPointsDataFrame and identical projection) 
-# SumFetch    - Takes site data and fetch data (downloaded Haida Gwaii data, or any data with columns providing values of fetch distance at each line)  
+# NearestPt   - Find nearest point and distance to that point from any two sets of point data (must be SpatialPointsDataFrame and identical projection)
+# SumFetch    - Takes site data and fetch data (downloaded Haida Gwaii data, or any data with columns providing values of fetch distance at each line)
               # finds nearest fetch data point and calculates summed fetch from all sites
               # user sets any maximum distance
               # note that NearestPt does not need to be run first
-# WindWeights - takes wind data (downloaded Haida Gwaii 2012-2016, or any wind data in same format) - calculates proportion of time that inwd blows in each direction 
+# WindWeights - takes wind data (downloaded Haida Gwaii 2012-2016, or any wind data in same format) - calculates proportion of time that inwd blows in each direction
               # user may define which years, which months and which stations to calculate weights matrix
-# WindFetch   - Takes site data and fetch data (downloaded Haida Gwaii data, or any data with columns providing values of fetch distance at each line) 
+# WindFetch   - Takes site data and fetch data (downloaded Haida Gwaii data, or any data with columns providing values of fetch distance at each line)
               # weights fetch lines according to weights from nearest wind.station and calculates summed fetch
-              # user sets any maximum distance, 
+              # user sets any maximum distance,
               # if user wants to limit weighting to one or several but not all wind stations, this may be defined in the WindWeights function
 
 ### ConvertProj
@@ -118,14 +112,14 @@ Windweights <- function(site.data, wind.data, years=2012:2016, months=1:12, stat
   # calculate wind weighting
   # subset years
   wind.ly <- list()
-  for (i in years) 
+  for (i in years)
   {
     wind.ly[[i]] <- subset(wind.narm, year==i)
     wind.y <- ldply(wind.ly, as.data.frame)
   }
   # subset months
   wind.lm <- list()
-  for (i in months) 
+  for (i in months)
   {
     wind.lm[[i]] <- subset(wind.y, month==i)
     wind.ym <- ldply(wind.lm, as.data.frame)
