@@ -12,7 +12,8 @@ Depends:
     sp
 Imports:
     datacheckr,
-    magrittr
+    magrittr,
+    rgdal
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
