@@ -15,3 +15,30 @@ knitr::opts_chunk$set(
 [![Travis-CI Build Status](https://travis-ci.org/sebdalgarno/HGfetch.svg?branch=master)](https://travis-ci.org/sebdalgarno/HGfetch)
 
 # HGfetch
+
+## Introduction
+
+xx
+
+## Utilisation
+
+```{r}
+library(HGfetch)
+
+data <- data.frame(Long = -131, Lat = 53)
+convert_proj(data)
+```
+
+## Installation
+
+To install from GitHub
+```
+# install.packages("devtools")
+devtools::install_github("sebdalgarno/HGfetch")
+```
+
+## Contribution
+
+Please report any [issues](https://github.com/sebdalgarno/HGfetch/issues).
+
+[Pull requests](https://github.com/sebdalgarno/HGfetch/pulls) are always welcome.
