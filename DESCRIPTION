@@ -1,0 +1,10 @@
+Package: HGfetch
+Title: Calculate Wave Exposure
+Version: 0.0.0.9000
+Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
+Description: Calculates wave exposure based on fetch and wind. 
+    Includes data for Haida Gwaii.
+Depends: R (>= 3.3.2)
+License: What license is it under?
+Encoding: UTF-8
+LazyData: true
