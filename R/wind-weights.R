@@ -1,14 +1,15 @@
 #' Wind weights
 #'
 #' @param wind.data A SpatialPointsDataFrame containing wind data
-#' @param DateTime A string of the name of the column containing DateTime data of class PROIxct.
+#' @param DateTime A string of the name of the column containing DateTime data of class POSIxct.
+#' @param Station A string of the name of the column containing Station data.
+#' @param Direction A string of the name of the column containing Direction data.
 #' @param years A vector of years to subset data by.
 #' @param months A vector of months to subset data by.
-#' @param Station A string of the name of the column containing Station data.
 #' @param which.station A vector of strings indicating which stations to subset. Default ("All") includes all stations.
-#' @param Direction A string of the name of the column containing Direction data.
+#'
 
-#' @return One additional column to site.data ('sumfetch') with summed fetch results.
+#' @return Weighting factor for fetch bearings based on proportion of time that wind blew in that bearing over defined timespan.
 #' @export
 wind_weights = function(wind.data, DateTime = "DateTime", Station = "Station", Direction = "Direction",
                         years = 2012:2016, months = 1:12, which.station = "All") {
@@ -37,7 +38,7 @@ wind_weights = function(wind.data, DateTime = "DateTime", Station = "Station", D
 
     wind.data %<>% ddply(.(Station, Direction), summarize, Freq=sum(dum))
 
-    total <-  ddply(wind.data, .(Station), summarize, total=sum(freq))
+    total <-  ddply(wind.data, .(Station), summarize, total=sum(Freq))
 
     wind.data %<>% mutate(Weight = Freq/total$total)
 
