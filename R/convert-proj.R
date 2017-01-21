@@ -1,12 +1,12 @@
-#' Convert Proj
+#' Convert Projection
 #'
 #' @param data The data.frame to convert.
 #' @param data.x A string of the name of the column containing the longitude.
-#' @param data.y xx
-#' @param data.CRS xx
-#' @param new.CRS xx
+#' @param data.y A string of the name of the column containing the latitude.
+#' @param data.CRS PROJ4 string defining current CRS of data.x and data.y.
+#' @param new.CRS PROJ4 string of desired CRS.
 #'
-#' @return A SpatialPointsDataFrame with
+#' @return A SpatialPointsDataFrame with data.x and data.y transformed to desired CRS.
 #' @export
 convert_proj <- function(data, data.x = "Long", data.y = "Lat", data.CRS = "+init=epsg:4326", new.CRS = "+init=epsg:3005") {
   check_string(data.x)

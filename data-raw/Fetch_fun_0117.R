@@ -53,7 +53,7 @@ sp.wind=ConvertProj(hgwind)
 sp.fetch=ConvertProj(hgfetch, data.CRS="+init=epsg:3005", new.CRS="+init=epsg:3005")
 
 ### NearestPt
-NearestPt=function(site.data, point.data, pointID="pointID", point.data2, point2ID) {
+NearestPt=function(site.data, point.data, pointID="pointID") {
   if(class(site.data)!="SpatialPointsDataFrame"|class(point.data)!="SpatialPointsDataFrame")
     stop('data sets must be SpatialPointsDataFrame! Use convert function first.')
   if(identical(site.data@proj4string,point.data@proj4string)==FALSE)
