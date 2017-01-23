@@ -28,14 +28,16 @@ library(HGfetch)
 data <- data.frame(Long = -131, Lat = 53)
 sp_data <- convert_proj(data)
 
-sp_wind <- convert_proj(cumshewa_wind)
-sp_fetch <- convert_proj(laskeek_fetch, data.CRS="+init=epsg:3005", new.CRS="+init=epsg:3005")
+cumshewa_wind %<>% convert_proj()
+laskeek_fetch %<>% convert_proj(data.CRS="+init=epsg:3005", new.CRS="+init=epsg:3005")
 
-data_sumfetch <- sum_fetch(data, sp_fetch, max.distance = 200000)
+data %<>% nearest_point(data2 = laskeek_fetch, data2ID = 'PointID')
 
-weights <- wind_weights(sp_wind, years = 2016, months = 4:8)
+data %<>% sum_fetch(fetch.data = laskeek_fetch, max.distance = 200000)
 
-data_windfetch <- wind_fetch(sp_data, sp_fetch, weights, max.distance = 200000)
+weights <- wind_weights(wind.data = cumshewa_wind, years = 2016, months = 4:8)
+
+data %<>% wind_fetch(fetch.data = sp_fetch, weights.data = weights, max.distance = 200000)
 ```
 
 ## Installation
