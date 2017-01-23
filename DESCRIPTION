@@ -15,7 +15,9 @@ Imports:
     magrittr,
     rgdal,
     SearchTrees,
-    dplyr
+    dplyr,
+    plyr,
+    lubridate
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

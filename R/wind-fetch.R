@@ -64,6 +64,8 @@ wind_fetch=function(site.data, fetch.data, fetch.bearing = "Bearing", fetch.dist
 
   site.data@data %<>% mutate(windfetch = fetch@data[index.fetch[,1], 'windfetch'])
 
+  return(site.data)
+
   }
 
 
