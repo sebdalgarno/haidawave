@@ -1,4 +1,4 @@
-#' Convert Projection
+#' Convert data.frame to SpatialPointsDataFrame and convert to a new CRS if necessary.
 #'
 #' @param data The data.frame to convert.
 #' @param data.x A string of the name of the column containing the longitude.
@@ -14,7 +14,7 @@ convert_proj <- function(data, data.x = "Long", data.y = "Lat", data.CRS = "+ini
   check_string(data.CRS)
   check_string(new.CRS)
 
-  if (inherits(data, "SpatialPointsDataFrame"))
+  if (inherits(data, "SpatialPointsDataFrame") == TRUE)
     warning('data is already a SpatialPointsDataFrame. Check that the coordinates were not already converted to a different CRS.')
 
   data %<>% as.data.frame()

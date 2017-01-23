@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 
 ## Introduction
 
-xx
+This package is designed to calculate two proxies for wave exposure: summed fetch and wind-altered fetch. Given a set of sites, a set of points with fetch distance calculated over a set of bearings, and wind direction measurements over a period of time (Haida Gwaii data available from http://github.com/sebdalgarno), the user may define a maximum fetch distance and a period of time (years and months) and set of weather stations for calculating wind weighting factors at each bearing. The nearest fetch points and weather station are then found for each site and summed fetch and/or wind-altered fetch is calculated.
 
 ## Utilisation
 
@@ -26,7 +26,16 @@ xx
 library(HGfetch)
 
 data <- data.frame(Long = -131, Lat = 53)
-convert_proj(data)
+sp_data <- convert_proj(data)
+
+sp_wind <- convert_proj(cumshewa_wind)
+sp_fetch <- convert_proj(laskeek_fetch, data.CRS="+init=epsg:3005", new.CRS="+init=epsg:3005")
+
+data_sumfetch <- sum_fetch(data, sp_fetch, max.distance = 200000)
+
+weights <- wind_weights(sp_wind, years = 2016, months = 4:8)
+
+data_windfetch <- wind_fetch(sp_data, sp_fetch, weights, max.distance = 200000)
 ```
 
 ## Installation
@@ -38,7 +47,7 @@ devtools::install_github("sebdalgarno/HGfetch")
 ```
 
 ## Contribution
-kk
+
 Please report any [issues](https://github.com/sebdalgarno/HGfetch/issues).
 
 [Pull requests](https://github.com/sebdalgarno/HGfetch/pulls) are always welcome.

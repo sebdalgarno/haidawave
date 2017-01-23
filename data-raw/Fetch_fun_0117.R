@@ -1,3 +1,13 @@
+library(rgdal)
+library(sp)
+library(rgeos)
+library(plyr)
+library(dplyr)
+library(magrittr)
+library(datacheckr)
+
+setwd("~/Google_Drive/Data")
+
 ### load fetch data
 hgfetch=read.csv('wave_exposure/Vector_fetch/txt_files/fetch_calcs/haida.gwaii.fetch.5.csv')
 ### load wind data

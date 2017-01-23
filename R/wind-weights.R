@@ -1,4 +1,4 @@
-#' Wind weights
+#' Given wind data, subset to a certain period of years and/or months and calculate the proportion of time that wind blew in each direction.
 #'
 #' @param wind.data A SpatialPointsDataFrame containing wind data
 #' @param DateTime A string of the name of the column containing DateTime data of class POSIxct.
@@ -36,19 +36,27 @@ wind_weights = function(wind.data, DateTime = "DateTime", station = "Station", d
 
     wind.data %<>% mutate(dum=1)
 
-    wind.data %<>% ddply(c(station, direction), summarize, Freq=sum(dum))
+    wind.data %<>% ddply(c(station, direction), summarize, Freq = sum(dum))
 
-    total <-  ddply(wind.data, station, summarize, total=sum(Freq))
+    total <-  ddply(wind.data, station, summarize, total = sum(Freq))
 
     wind.data %<>% mutate(Weight = Freq/total$total)
 
-    wind.data %<>% sp::merge(station.coords, by.x = station, by.y = station) 
+    wind.data %<>% sp::merge(station.coords, by.x = station, by.y = station)
+
+    coordinates(wind.data) <- colnames(station.coords@coords)
+
+    proj4string(wind.data) <- station.coords@proj4string
 
     return(wind.data)
   }
 
   if (which.station != "All") {
     wind.data %<>% subset(station %in% which.station)
+
+    coordinates(wind.data) <- colnames(station.coords@coords)
+
+    proj4string(wind.data) <- station.coords@proj4string
 
     return(wind.data)
   }
