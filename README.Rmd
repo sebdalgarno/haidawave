@@ -16,9 +16,11 @@ knitr::opts_chunk$set(
 
 # HGfetch
 
+Calculate two proxies for wave exposure at a set of sites: summed fetch and wind-altered fetch.
+
 ## Introduction
 
-This package is designed to calculate two proxies for wave exposure: summed fetch and wind-altered fetch. Given a set of sites, a set of points with fetch distance calculated over a set of bearings, and wind direction measurements over a period of time (Haida Gwaii data available from http://github.com/sebdalgarno), the user may define a maximum fetch distance and a period of time (years and months) and set of weather stations for calculating wind weighting factors at each bearing. The nearest fetch points and weather station are then found for each site and summed fetch and/or wind-altered fetch is calculated.
+Calculate two proxies for wave exposure at a set of sites: summed fetch and wind-altered fetch. Fetch data are provided for Laskeek Bay, BC, and wind data are provided for Cumshewa weather station from 2012-2016. Two additional data sets are available for download from http://github.com/sebdalgarno : (1) Fetch distances at 5 degree intervals from points spaced every 10m along the Haida Gwaii coastline; (2) wind data from all weather stations (n=7) in Haida Gwaii with availalable hourly wind direction recordings from 2012-2016. Summed fetch is calculated by finding the nearest point within the fetch data set. User may set maximum fetch distance. Wind-altered fetch is calculated by weighting fetch lines according to proportion of time that weind blew in that. User may define years, months and which stations are included for determination of weighting factors. Each site is weighted according to the nearest weather station.
 
 ## Utilisation
 
@@ -49,6 +51,8 @@ devtools::install_github("sebdalgarno/HGfetch")
 ```
 
 ## Contribution
+
+Included data sets: fetch distances (laskeek_fetch) were calculated using ShoreZone 1:50,000 vector coastline data and software (Vector_fetch) developed by Mika Murtojarvi; wind data (cumshewa_wind) were taken from http://http://climate.weather.gc.ca/historical_data/search_historic_data_e.html.
 
 Please report any [issues](https://github.com/sebdalgarno/HGfetch/issues).
 

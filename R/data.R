@@ -9,9 +9,9 @@
 #' \describe{
 #'   \item{Station}{The station name (chr).}
 #'   \item{DateTime}{The date time (time).}
-#'   \item{Direction}{The wind direction in degrees/10 (num).}
+#'   \item{Direction}{The wind direction in degrees (num).}
 #'   \item{Speed}{The wind speed in km/hour (dbl).}
-#'   \item{Longitude}{The longitude of weather station (dbl).}
-#'   \item{Latitude}{The latitude of weather station (dbl).}
+#'   \item{Longitude}{The longitude of weather station, WGS84 (dbl).}
+#'   \item{Latitude}{The latitude of weather station, WGS84 (dbl).}
 #' }
 "cumshewa_wind"

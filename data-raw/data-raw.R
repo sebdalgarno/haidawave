@@ -8,7 +8,7 @@ rm(list = ls())
 cumshewa_wind <- read_csv('data-raw/wind-cumshewa-1216.csv')
 laskeek_fetch <- read_csv('data-raw/laskeekbay-fetch-5.csv')
 
-laskeek_fetch %<>% select(PointID = PointID,
+laskeek_fetch %<>% dplyr::select(PointID = PointID,
                           Long = Long,
                           Lat = Lat,
                           Bearing = Bearing,

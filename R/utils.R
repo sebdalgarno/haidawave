@@ -1,5 +1,10 @@
 # check SpatialPointsDataFrame
 is.spdf <- function(x) {
-  is.inherits(x, "SpatialPointsDataFrame")
+  inherits(x, "SpatialPointsDataFrame")
+}
+
+# check identical CRS
+same.crs <- function(x,y) {
+  identical(x@proj4string, y@proj4string)
 }
 

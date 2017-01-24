@@ -1,4 +1,8 @@
-#' Given wind data, subset to a certain period of years and/or months and calculate the proportion of time that wind blew in each direction.
+#' Calculate wind weighting factors for each direction.
+#'
+#' Calculate weighting factors according to proportion of time that wind blew in a given direction over a defined period of years and months. Select which stations to include.
+#'
+#' For this function to work, input data must be SpatialPointsDataFrame. The convert_proj function can be used to achieve that. For use of output in other functions, CRS should be set to be identical to other inputs.
 #'
 #' @param wind.data A SpatialPointsDataFrame containing wind data
 #' @param DateTime A string of the name of the column containing DateTime data of class POSIxct.
@@ -8,7 +12,6 @@
 #' @param months A vector of months to subset data by.
 #' @param which.station A vector of strings indicating which stations to subset. Default ("All") includes all stations.
 #'
-
 #' @return Weighting factor for fetch bearings based on proportion of time that wind blew in that direction over defined timespan.
 #' @export
 wind_weights = function(wind.data, DateTime = "DateTime", station = "Station", direction = "Direction",
@@ -17,47 +20,52 @@ wind_weights = function(wind.data, DateTime = "DateTime", station = "Station", d
   check_string(station)
   check_string(DateTime)
 
-  if (inherits(wind.data, "SpatialPointsDataFrame") == FALSE)
+  if (is.spdf(wind.data) == FALSE)
     stop('data sets must be SpatialPointsDataFrame! Use convert_proj function first.')
   if (inherits(wind.data$DateTime, "POSIXct") == FALSE)
     stop ('DateTime column must be POSIxct!')
 
-  station.coords <- sp::remove.duplicates(wind.data)
+  check_cols(wind.data@data, colnames = c(direction, station, DateTime))
 
-  station.coords <- station.coords[,station]
+  colnames(wind.data@coords) <- c("Long", "Lat")
 
-  wind.data %<>% as.data.frame() %<>% na.omit()
+  wind <- as.data.frame(wind.data)
 
-  check_cols(wind.data, colnames = c(direction, station, DateTime))
+  wind %<>% na.omit()
+
+  wind %<>% subset(lubridate::year(DateTime) %in% years &
+                     lubridate::month(DateTime) %in% months)
+
+  wind %<>% dplyr::mutate(dum=1)
+
+  wind %<>% plyr::ddply(c(station, direction), summarize, Freq = sum(dum), Long=min(Long), Lat=min(Lat))
+
+  total <-  plyr::ddply(wind, station, summarize, total = sum(Freq))
+
+  wind %<>% dplyr::mutate(Weight = Freq/total$total)
 
   if (which.station == "All") {
-    wind.data %<>% subset(lubridate::year(DateTime) %in% years &
-                          lubridate::month(DateTime) %in% months)
 
-    wind.data %<>% mutate(dum=1)
+    coordinates(wind) <- c("Long", "Lat")
 
-    wind.data %<>% ddply(c(station, direction), summarize, Freq = sum(dum))
+    proj4string(wind) <- wind.data@proj4string
 
-    total <-  ddply(wind.data, station, summarize, total = sum(Freq))
-
-    wind.data %<>% mutate(Weight = Freq/total$total)
-
-    wind.data %<>% sp::merge(station.coords, by.x = station, by.y = station)
-
-    coordinates(wind.data) <- colnames(station.coords@coords)
-
-    proj4string(wind.data) <- station.coords@proj4string
-
-    return(wind.data)
+    return(wind)
   }
 
   if (which.station != "All") {
-    wind.data %<>% subset(station %in% which.station)
 
-    coordinates(wind.data) <- colnames(station.coords@coords)
+    colnames(wind)[colnames(wind) == station] <- 'stat'
 
-    proj4string(wind.data) <- station.coords@proj4string
+    wind %<>% subset(stat %in% which.station)
 
-    return(wind.data)
+    colnames(wind)[colnames(wind) == 'stat'] <- station
+
+    coordinates(wind) <- c("Long", "Lat")
+
+    proj4string(wind) <- wind.data@proj4string
+
+    return(wind)
   }
+
 }

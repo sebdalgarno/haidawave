@@ -8,7 +8,10 @@
 \describe{
   \item{Station}{The station name (chr).}
   \item{DateTime}{The date time (time).}
-  \item{MLLW}{The tide height in m (dbl).}
+  \item{Direction}{The wind direction in degrees (num).}
+  \item{Speed}{The wind speed in km/hour (dbl).}
+  \item{Longitude}{The longitude of weather station, WGS84 (dbl).}
+  \item{Latitude}{The latitude of weather station, WGS84 (dbl).}
 }}
 \usage{
 cumshewa_wind
@@ -17,7 +20,7 @@ cumshewa_wind
 A tbl of the hourly wind direction and speed at Cumshewa Head 2012 to 2016.
 }
 \details{
-High/Low Tide Predictions from \url{http://tidesandcurrents.noaa.gov/tide_predictions.html}.
+Hourly wind measurements from \url{http://http://climate.weather.gc.ca/historical_data/search_historic_data_e.html}.
 }
 \keyword{datasets}
 
