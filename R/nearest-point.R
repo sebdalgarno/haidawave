@@ -14,9 +14,9 @@ nearest_point = function(data1, data2, data2.ID = "PointID") {
   check_string(data2.ID)
   check_unique(data2.ID)
 
-  if (utils::is.spdf(data1) == FALSE | is.spdf(data2) == FALSE)
+  if (is.spdf(data1) == FALSE | is.spdf(data2) == FALSE)
     stop('data sets must be SpatialPointsDataFrame! Use convert_proj function first.')
-  if (utils::same.crs(data1, data2) == FALSE)
+  if (same.crs(data1, data2) == FALSE)
     stop('data sets must have same CRS! Use convert_proj function first.')
 
   check_cols(data2@data, colnames = data2.ID)
