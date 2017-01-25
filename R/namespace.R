@@ -1,5 +1,4 @@
-#' @import datacheckr
-#' @import sp
+#' @import datacheckr sp
 #' @importFrom magrittr %<>% %>%
 #' @importFrom SearchTrees createTree knnLookup
 #' @importFrom plyr ddply summarize
