@@ -7,13 +7,13 @@ library(devtools)
 rm(list = ls())
 
 cumshewa_wind <- read_csv('data-raw/wind-cumshewa-1216.csv')
-laskeek_fetch <- read_csv('data-raw/laskeekbay-fetch-5.csv')
+laskeek_fetch <- read_csv('data-raw/laskeekbay-fetch-5.csv', col_types = cols(Distance = col_double()))
 
 cumshewa_wind$DateTime %<>% force_tz(tzone = "Etc/GMT+8")
 
 laskeek_fetch %<>% dplyr::select(PointID = PointID,
-                          Long = Long,
-                          Lat = Lat,
+                          Easting = Long,
+                          Northing = Lat,
                           Bearing = Bearing,
                           Distance = Distance)
 
