@@ -20,12 +20,19 @@ Calculate two proxies for wave exposure at a set of sites: summed fetch and wind
 
 ## Introduction
 
-Calculate two proxies for wave exposure at a set of sites: summed fetch and wind-altered fetch. Fetch data are provided for Laskeek Bay, BC, and wind data are provided for Cumshewa weather station from 2012-2016. Two additional data sets are available for download from http://github.com/sebdalgarno : (1) Fetch distances at 5 degree intervals from points spaced every 10m along the Haida Gwaii coastline; (2) wind data from all weather stations (n=7) in Haida Gwaii with availalable hourly wind direction recordings from 2012-2016. Summed fetch is calculated by finding the nearest point within the fetch data set. User may set maximum fetch distance. Wind-altered fetch is calculated by weighting fetch lines according to proportion of time that weind blew in that. User may define years, months and which stations are included for determination of weighting factors. Each site is weighted according to the nearest weather station.
+Calculate two proxies for wave exposure at a set of sites: summed fetch and wind-altered fetch. 
+Fetch data are provided for Laskeek Bay, BC, and wind data are provided for Cumshewa weather station from 2012-2016.
+Two additional data sets are available for download from http://github.com/sebdalgarno : (1) Fetch distances at 5 degree intervals from points spaced every 10m along the Haida Gwaii coastline; (2) wind data from all weather stations (n=7) in Haida Gwaii with availalable hourly wind direction recordings from 2012-2016. 
+Summed fetch is calculated by finding the nearest point within the fetch data set. 
+User may set maximum fetch distance. 
+Wind-altered fetch is calculated by weighting fetch lines according to proportion of time that weind blew in that. User may define years, months and which stations are included for determination of weighting factors. 
+Each site is weighted according to the nearest weather station.
 
 ## Utilisation
 
 ```{r}
 library(HGfetch)
+library(magrittr)
 
 data <- data.frame(Long = -131, Lat = 53)
 sp_data <- convert_proj(data)
