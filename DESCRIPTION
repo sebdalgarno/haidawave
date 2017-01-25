@@ -1,7 +1,7 @@
 Package: HGfetch
 Title: Calculate Wave Exposure
-Version: 0.0.0.9000
-Date: 2017-01-18
+Version: 0.0.0.9001
+Date: 2017-01-24
 Authors@R: c(
     person("Sebastian", "Dalgarno", email = "seb.dalgarno@gmail.com", role = c("aut", "cre")),
     person("Joe", "Thorley", email = "joe@poissonconsulting.ca", role = "aut"))
