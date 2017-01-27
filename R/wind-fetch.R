@@ -31,7 +31,7 @@ wind_fetch=function(site.data, fetch.data, fetch.bearing = "Bearing", fetch.dist
 
   if (is.spdf(site.data) == FALSE | is.spdf(fetch.data) == FALSE | is.spdf(weights.data) == FALSE)
     stop('data sets must be SpatialPointsDataFrame! Use convert function first.')
-  if (same.crs(site.data, fetch.data) == FALSE | same.crs(fetch.data, weights.data == FALSE))
+  if (same.crs(site.data, fetch.data) == FALSE | same.crs(fetch.data, weights.data) == FALSE)
     stop('data sets must have same CRS! Use convert function first.')
 
   check_cols(weights.data@data, colnames = c(weights.direction, weights, weights.station))
@@ -59,7 +59,7 @@ wind_fetch=function(site.data, fetch.data, fetch.bearing = "Bearing", fetch.dist
 
   fetch %<>% dplyr::mutate(weight.dist = dis*weights)
 
-  fetch %<>% plyr::ddply(fetch.ID, summarize, windfetch = round(sum(weight.dist), 0), Long = min(Long), Lat = min(Lat))
+  fetch %<>% plyr::ddply(fetch.ID, summarize, windfetch = round(sum(weight.dist), 0), Long = dplyr::first(Long), Lat = dplyr::first(Lat))
 
   coordinates(fetch) <- c("Long", "Lat")
   proj4string(fetch) <- fetch.data@proj4string
