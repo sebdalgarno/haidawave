@@ -59,7 +59,7 @@ wind_fetch=function(site.data, fetch.data, fetch.bearing = "Bearing", fetch.dist
 
   fetch %<>% dplyr::mutate(weight.dist = dis*weights)
 
-  fetch %<>% plyr::ddply(fetch.ID, summarize, windfetch = round(sum(weight.dist), 0), Long = dplyr::first(Long), Lat = dplyr::first(Lat))
+  fetch %<>% plyr::ddply(fetch.ID, summarize, windfetch = round(mean(weight.dist), 0), Long = dplyr::first(Long), Lat = dplyr::first(Lat))
 
   coordinates(fetch) <- c("Long", "Lat")
   proj4string(fetch) <- fetch.data@proj4string
