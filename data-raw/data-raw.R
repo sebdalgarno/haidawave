@@ -17,6 +17,8 @@ laskeek_fetch %<>% dplyr::select(PointID = PointID,
                           Bearing = Bearing,
                           Distance = Distance)
 
+laskeek_fetch[,'Distance'][laskeek_fetch[,'Distance']>200000] = 200000
+
 use_data(cumshewa_wind, overwrite = TRUE)
 
 use_data(laskeek_fetch, overwrite = TRUE)

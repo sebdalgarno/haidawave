@@ -25,9 +25,15 @@ nearest_point = function(data1, data2, data2.ID = "PointID") {
 
   index <- SearchTrees::knnLookup(tree, newdat=coordinates(data1), k=1)
 
-  data1@data %<>% dplyr::mutate(nearest.ID = data2@data[index[,1], data2.ID])
+  data <- as.data.frame(data1)
 
-  return(data1)
+  data %<>% dplyr::mutate(nearest.ID = data2@data[index[,1], data2.ID])
+
+  coordinates(data) <- colnames(data1@coords)
+  proj4string(data) <- data1@proj4string
+
+  return(data)
+
 }
 
 

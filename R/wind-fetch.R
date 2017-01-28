@@ -20,7 +20,7 @@
 #' @return One additional column to site.data ('windfetch') with wind-altered summed fetch results.
 #' @export
 wind_fetch=function(site.data, fetch.data, fetch.bearing = "Bearing", fetch.distance = "Distance", fetch.ID = "PointID", weights.data,
-                   weights.station = "Station", weights.direction = "Direction", weights = "Weight",  max.distance = 200000) {
+                   weights.station = "Station", weights.direction = "Direction", weights = "Weight", max.distance = 200000) {
   check_string(fetch.bearing)
   check_string(fetch.distance)
   check_string(fetch.ID)

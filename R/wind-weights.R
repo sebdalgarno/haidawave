@@ -8,15 +8,17 @@
 #' @param DateTime A string of the name of the column containing DateTime data of class POSIxct.
 #' @param station A string of the name of the column containing names of weather stations.
 #' @param direction A string of the name of the column containing wind direction at a given time.
+#' @param speed A string of the name of the column containing wind speed at a given time.
 #' @param years A vector of years to subset data by.
 #' @param months A vector of months to subset data by.
 #' @param which.station A vector of strings indicating which stations to subset. Default ("All") includes all stations.
 #'
 #' @return Weighting factor for fetch bearings based on proportion of time that wind blew in that direction over defined timespan.
 #' @export
-wind_weights = function(wind.data, DateTime = "DateTime", station = "Station", direction = "Direction",
+wind_weights = function(wind.data, DateTime = "DateTime", station = "Station", direction = "Direction", speed = "Speed",
                         years = 2012:2016, months = 1:12, which.station = "All") {
   check_string(direction)
+  check_string(speed)
   check_string(station)
   check_string(DateTime)
 
@@ -25,7 +27,7 @@ wind_weights = function(wind.data, DateTime = "DateTime", station = "Station", d
   if (inherits(wind.data$DateTime, "POSIXct") == FALSE)
     stop ('DateTime column must be POSIxct!')
 
-  check_cols(wind.data@data, colnames = c(direction, station, DateTime))
+  check_cols(wind.data@data, colnames = c(direction, speed, station, DateTime))
 
   colnames(wind.data@coords) <- c("Long", "Lat")
 
@@ -38,11 +40,13 @@ wind_weights = function(wind.data, DateTime = "DateTime", station = "Station", d
 
   wind %<>% dplyr::mutate(dum=1)
 
-  wind %<>% plyr::ddply(c(station, direction), summarize, Freq = sum(dum), Long=min(Long), Lat=min(Lat))
+  colnames(wind)[colnames(wind) == speed] <- 'spd'
+
+  wind %<>% plyr::ddply(c(station, direction), summarize, Freq = sum(dum), Speed = mean(spd), Long = dplyr::first(Long), Lat = dplyr::first(Lat))
 
   total <-  plyr::ddply(wind, station, summarize, total = sum(Freq))
 
-  wind %<>% dplyr::mutate(Weight = Freq/total$total)
+  wind %<>% dplyr::mutate(Weight = Freq/total$total * Speed)
 
   if (which.station == "All") {
 

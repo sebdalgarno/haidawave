@@ -5,8 +5,8 @@
 \title{Calculate wind weighting factors for each direction.}
 \usage{
 wind_weights(wind.data, DateTime = "DateTime", station = "Station",
-  direction = "Direction", years = 2012:2016, months = 1:12,
-  which.station = "All")
+  direction = "Direction", speed = "Speed", years = 2012:2016,
+  months = 1:12, which.station = "All")
 }
 \arguments{
 \item{wind.data}{A SpatialPointsDataFrame containing wind data}
@@ -16,6 +16,8 @@ wind_weights(wind.data, DateTime = "DateTime", station = "Station",
 \item{station}{A string of the name of the column containing names of weather stations.}
 
 \item{direction}{A string of the name of the column containing wind direction at a given time.}
+
+\item{speed}{A string of the name of the column containing wind speed at a given time.}
 
 \item{years}{A vector of years to subset data by.}
 
