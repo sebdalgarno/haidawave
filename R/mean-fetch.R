@@ -7,7 +7,7 @@
 #'
 #' @param site.data A SpatialPointsDataFrame of sites requiring estimates of wave exposure.
 #' @param fetch.data A SpatialPointsDataFrame with columns containing unique ID, bearing, and fetch distance, along with coordinates.
-#' @param max.distance An integer indicating desired maximum dfetch distance.
+#' @param max.distance An integer indicating desired maximum fetch distance (in metres).
 
 #' @return Two additional columns to site.data: 'nearest.pt' contains unique ID of nearest fetch.data point; 'sumfetch' contains summed fetch results.
 #' @export
@@ -15,9 +15,11 @@ mean_fetch = function(site.data, fetch.data, max.distance = 200000) {
   check_number(max.distance)
 
   if(is.spdf(site.data) == FALSE|is.spdf(fetch.data)  == FALSE)
-    stop('data sets must be SpatialPointsDataFrame! Use convert_proj function first.')
+    stop('Data sets must be SpatialPointsDataFrame! Use convert_proj function first.')
   if(same.crs(site.data, fetch.data) == FALSE)
-    stop('data sets must have same CRS! Use convert_proj function first.')
+    stop('Data sets must have same CRS! Use convert_proj function first.')
+  if(max.distance > 200000)
+    warning('Fetch distances are only accurate to a maximum of 200,000 m.')
 
   colnames(fetch.data@coords) <- c("X", "Y")
 

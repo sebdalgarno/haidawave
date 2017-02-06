@@ -12,7 +12,7 @@
 #' @param weights.station A string of the name of the column containing names of weather stations.
 #' @param weights.direction A string of the name of the column containing wind direction.
 #' @param weights A string of the name of the column containing wind weighting factors for each direction.
-#' @param max.distance An integer indicating desired maximum distance of fetch calculations.
+#' @param max.distance An integer indicating desired maximum distance of fetch calculations (in metres).
 
 #' @return One additional column to site.data ('windfetch') with wind-altered summed fetch results.
 #' @export
@@ -28,6 +28,8 @@ wind_fetch=function(site.data, fetch.data, weights.data, weights.station = "Stat
     stop('data sets must be SpatialPointsDataFrame! Use convert function first.')
   if (same.crs(site.data, fetch.data) == FALSE | same.crs(fetch.data, weights.data) == FALSE)
     stop('data sets must have same CRS! Use convert function first.')
+  if(max.distance > 200000)
+    warning('Fetch distances are only accurate to a maximum of 200,000 m.')
 
   check_cols(weights.data@data, colnames = c(weights.direction, weights, weights.station))
 
