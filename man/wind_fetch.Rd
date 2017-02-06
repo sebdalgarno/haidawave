@@ -4,21 +4,14 @@
 \alias{wind_fetch}
 \title{Calculate wind-altered summed fetch.}
 \usage{
-wind_fetch(site.data, fetch.data, fetch.bearing = "Bearing",
-  fetch.distance = "Distance", fetch.ID = "PointID", weights.data,
-  weights.station = "Station", weights.direction = "Direction",
-  weights = "Weight", max.distance = 2e+05)
+wind_fetch(site.data, fetch.data, weights.data, weights.station = "Station",
+  weights.direction = "Direction", weights = "Weight",
+  max.distance = 2e+05)
 }
 \arguments{
 \item{site.data}{A SpatialPointsDataFrame of sites requiring estimates of wave exposure.}
 
 \item{fetch.data}{A SpatialPointsDataFrame of sites with a column indicating fetch bearing and a column indicating fetch distance.}
-
-\item{fetch.bearing}{A string of the name of the column containing fetch bearing.}
-
-\item{fetch.distance}{A string of the name of the column containing fetch distance.}
-
-\item{fetch.ID}{A string of the name of the column containing unique ID.}
 
 \item{weights.data}{A SpatialPointsDataFrame including columns indicating station name, direction and weighting factor.}
 

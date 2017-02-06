@@ -7,42 +7,43 @@
 #'
 #' @param site.data A SpatialPointsDataFrame of sites requiring estimates of wave exposure.
 #' @param fetch.data A SpatialPointsDataFrame with columns containing unique ID, bearing, and fetch distance, along with coordinates.
-#' @param fetch.ID A string of the name of the column containing a unique point ID.
-#' @param fetch.distance A string of the name of the column containing fetch distance.
 #' @param max.distance An integer indicating desired maximum dfetch distance.
 
 #' @return Two additional columns to site.data: 'nearest.pt' contains unique ID of nearest fetch.data point; 'sumfetch' contains summed fetch results.
 #' @export
-mean_fetch = function(site.data, fetch.data, fetch.ID = "PointID", fetch.distance = "Distance", max.distance = 200000) {
+mean_fetch = function(site.data, fetch.data, max.distance = 200000) {
   check_number(max.distance)
-  check_string(fetch.ID)
-  check_string(fetch.distance)
-
-  check_cols(fetch.data@data, colnames = c(fetch.ID, fetch.distance))
 
   if(is.spdf(site.data) == FALSE|is.spdf(fetch.data)  == FALSE)
     stop('data sets must be SpatialPointsDataFrame! Use convert_proj function first.')
   if(same.crs(site.data, fetch.data) == FALSE)
     stop('data sets must have same CRS! Use convert_proj function first.')
 
-  colnames(fetch.data@data)[colnames(fetch.data@data) == fetch.distance] <- 'd'
+  colnames(fetch.data@coords) <- c("X", "Y")
 
-  fetch.data@data[,'d'][fetch.data@data[,'d']>max.distance] = max.distance
+  # melt
+  fetch <- as.data.frame(fetch.data) %>%
 
-  colnames(fetch.data@coords) <- c("Long", "Lat")
+    mutate(PointID = 1:nrow(fetch.data)) %>%
 
-  fetch <- as.data.frame(fetch.data)
+    melt(id.vars=c("X", "Y", "PointID"), variable.name = "Bearing", value.name = "Distance") %>%
 
-  fetch %<>% plyr::ddply('PointID', summarize, meanfetch = mean(d), Long = dplyr::first(Long), Lat = dplyr::first(Lat))
+    mutate(Bearing = as.character(Bearing),
+           Bearing = gsub("X", "", Bearing),
+           Bearing = as.numeric(Bearing)) %>%
 
-  coordinates(fetch) <- c("Long", "Lat")
+    mutate(Distance = replace(Distance, Distance > max.distance, max.distance))
+
+  fetch %<>% plyr::ddply('PointID', summarize, meanfetch = mean(Distance), X = dplyr::first(X), Y = dplyr::first(Y))
+
+  coordinates(fetch) <- c("X", "Y")
   proj4string(fetch) <- fetch.data@proj4string
 
   tree <- SearchTrees::createTree(coordinates(fetch))
 
   index <- SearchTrees::knnLookup(tree, newdat=coordinates(site.data), k=1)
 
-  site.data@data %<>% dplyr::mutate(meanfetch = fetch@data[index[,1], 'meanfetch'])
+  site.data$meanfetch <- fetch@data[index[,1], 'meanfetch']
 
   return(site.data)
 

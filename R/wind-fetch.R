@@ -8,9 +8,6 @@
 #'
 #' @param site.data A SpatialPointsDataFrame of sites requiring estimates of wave exposure.
 #' @param fetch.data A SpatialPointsDataFrame of sites with a column indicating fetch bearing and a column indicating fetch distance.
-#' @param fetch.bearing A string of the name of the column containing fetch bearing.
-#' @param fetch.distance A string of the name of the column containing fetch distance.
-#' @param fetch.ID A string of the name of the column containing unique ID.
 #' @param weights.data A SpatialPointsDataFrame including columns indicating station name, direction and weighting factor.
 #' @param weights.station A string of the name of the column containing names of weather stations.
 #' @param weights.direction A string of the name of the column containing wind direction.
@@ -19,11 +16,9 @@
 
 #' @return One additional column to site.data ('windfetch') with wind-altered summed fetch results.
 #' @export
-wind_fetch=function(site.data, fetch.data, fetch.bearing = "Bearing", fetch.distance = "Distance", fetch.ID = "PointID", weights.data,
-                   weights.station = "Station", weights.direction = "Direction", weights = "Weight", max.distance = 200000) {
-  check_string(fetch.bearing)
-  check_string(fetch.distance)
-  check_string(fetch.ID)
+wind_fetch=function(site.data, fetch.data, weights.data, weights.station = "Station",
+                    weights.direction = "Direction", weights = "Weight", max.distance = 200000) {
+
   check_string(weights.direction)
   check_string(weights.station)
   check_string(weights)
@@ -35,43 +30,49 @@ wind_fetch=function(site.data, fetch.data, fetch.bearing = "Bearing", fetch.dist
     stop('data sets must have same CRS! Use convert function first.')
 
   check_cols(weights.data@data, colnames = c(weights.direction, weights, weights.station))
-  check_cols(fetch.data@data, colnames = c(fetch.bearing, fetch.distance))
 
-  colnames(fetch.data@data)[colnames(fetch.data@data) == fetch.distance] <- 'dis'
-  colnames(weights.data@data)[colnames(weights.data@data) == weights.direction] <- 'dir'
   colnames(weights.data@data)[colnames(weights.data@data) == weights] <- 'weights'
+  colnames(fetch.data@coords) <- c("X", "Y")
 
-  fetch.data@data[,'dis'][fetch.data@data[,'dis']>max.distance]=max.distance
+  fetch <- as.data.frame(fetch.data) %>%
 
+    mutate(PointID = 1:nrow(fetch.data)) %>%
+
+    melt(id.vars=c("X", "Y", "PointID"), variable.name = "Bearing", value.name = "Distance") %>%
+
+    mutate(Bearing = as.character(Bearing),
+           Bearing = gsub("X", "", Bearing),
+           Bearing = as.numeric(Bearing)) %>%
+
+    mutate(Distance = replace(Distance, Distance > 200000, 200000))
+
+  coordinates(fetch) <- c("X", "Y")
+  proj4string(fetch) <- fetch.data@proj4string
+
+  # add nearest weather station
   tree.wind <- SearchTrees::createTree(coordinates(weights.data))
 
-  index.wind <- SearchTrees::knnLookup(tree.wind, newdat=coordinates(fetch.data), k=1)
+  index.wind <- SearchTrees::knnLookup(tree.wind, newdat=coordinates(fetch), k=1)
 
-  fetch.data@data %<>% dplyr::mutate(Station = weights.data@data[index.wind[,1], weights.station])
+  fetch@data %<>% dplyr::mutate(Station = weights.data@data[index.wind[,1], 'Station'])
 
-  weights.data@data %<>% dplyr::mutate(Direction = round(dir, -1))
+  fetch %<>% as.data.frame() %>%
 
-  colnames(fetch.data@coords) <- c("Long", "Lat")
+    base::merge(weights.data@data, by.x = c('Station', 'Bearing'), by.y = c(weights.station, weights.direction)) %>%
 
-  fetch <- as.data.frame(fetch.data)
+    dplyr::mutate(weight.dist = Distance*weights)  %>%
 
-  fetch %<>% base::merge(weights.data@data, by.x = c('Station', fetch.bearing), by.y = c(weights.station, weights.direction))
+    plyr::ddply('PointID', dplyr::summarize, windfetch = round(mean(weight.dist), 0), X = dplyr::first(X), Y = dplyr::first(Y))
 
-  fetch %<>% dplyr::mutate(weight.dist = dis*weights)
-
-  fetch %<>% plyr::ddply(fetch.ID, summarize, windfetch = round(mean(weight.dist), 0), Long = dplyr::first(Long), Lat = dplyr::first(Lat))
-
-  coordinates(fetch) <- c("Long", "Lat")
+  coordinates(fetch) <- c("X", "Y")
   proj4string(fetch) <- fetch.data@proj4string
 
   tree.fetch <- SearchTrees::createTree(coordinates(fetch))
 
   index.fetch <- SearchTrees::knnLookup(tree.fetch, newdat=coordinates(site.data), k=1)
 
-  site.data@data %<>% dplyr::mutate(windfetch = fetch@data[index.fetch[,1], 'windfetch'])
+  site.data$windfetch <- fetch@data[index.fetch[,1], 'windfetch']
 
   return(site.data)
 
-  }
-
-
+}

@@ -4,17 +4,12 @@
 \alias{mean_fetch}
 \title{Calculate mean fetch at sites.}
 \usage{
-mean_fetch(site.data, fetch.data, fetch.ID = "PointID",
-  fetch.distance = "Distance", max.distance = 2e+05)
+mean_fetch(site.data, fetch.data, max.distance = 2e+05)
 }
 \arguments{
 \item{site.data}{A SpatialPointsDataFrame of sites requiring estimates of wave exposure.}
 
 \item{fetch.data}{A SpatialPointsDataFrame with columns containing unique ID, bearing, and fetch distance, along with coordinates.}
-
-\item{fetch.ID}{A string of the name of the column containing a unique point ID.}
-
-\item{fetch.distance}{A string of the name of the column containing fetch distance.}
 
 \item{max.distance}{An integer indicating desired maximum dfetch distance.}
 }

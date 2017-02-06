@@ -5,4 +5,5 @@
 #' @importFrom dplyr mutate select
 #' @importFrom lubridate month year
 #' @importFrom stats na.omit
+#' @importFrom reshape2 melt
 NULL

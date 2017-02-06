@@ -60,8 +60,6 @@ cumshewa_wind %<>% convert_proj()
 
 laskeek_fetch %<>% convert_proj(data.x = 'Easting', data.y = 'Northing', data.CRS="+init=epsg:3005", new.CRS="+init=epsg:3005")
 
-data %<>% nearest_point(data2 = laskeek_fetch, data2.ID = 'PointID')
-
 data %<>% mean_fetch(fetch.data = laskeek_fetch, max.distance = 200000)
 
 weights <- wind_weights(wind.data = cumshewa_wind, years = 2016, months = 9:4)
@@ -73,8 +71,6 @@ data %<>% wind_fetch(fetch.data = laskeek_fetch, weights.data = weights, max.dis
 ```{r}
 # plot Mean Fetch and Wind-weighted Fetch results for Reef Island, Laskeek Bay, British Coluumbia
 lbsites <- remove.duplicates(laskeek_fetch)
-
-lbsites@data %<>% select(PointID)
 
 lbsites %<>% mean_fetch(laskeek_fetch)
 

@@ -11,13 +11,9 @@ laskeek_fetch <- read_csv('data-raw/laskeekbay-fetch-5.csv', col_types = cols(Di
 
 cumshewa_wind$DateTime %<>% force_tz(tzone = "Etc/GMT+8")
 
-laskeek_fetch %<>% dplyr::select(PointID = PointID,
-                          Easting = Long,
-                          Northing = Lat,
-                          Bearing = Bearing,
-                          Distance = Distance)
-
-laskeek_fetch[,'Distance'][laskeek_fetch[,'Distance']>200000] = 200000
+laskeek_fetch %<>% dplyr::mutate(Easting = Long,
+                                 Northing = Lat) %>%
+  select(-X1, -Long, -Lat)
 
 use_data(cumshewa_wind, overwrite = TRUE)
 

@@ -17,7 +17,8 @@ Imports:
     SearchTrees,
     dplyr,
     plyr,
-    lubridate
+    lubridate,
+    reshape2
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
