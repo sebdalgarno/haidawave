@@ -1,5 +1,5 @@
-Package: HGfetch
-Title: Calculate Wave Exposure
+Package: haidawave
+Title: Fetch-based wave-exposure model.
 Version: 0.0.0.9001
 Date: 2017-01-24
 Authors@R: c(
