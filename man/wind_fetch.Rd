@@ -30,8 +30,8 @@ One additional column to site.data ('WindFetch') with wind-altered summed fetch 
 Set maximum fetch distance, find fetch lines from nearest point, weight fetch lines according to conditions at nearest weather station, calculate wind-altered summed fetch.
 }
 \details{
-For this function to work, input data must be SpatialPointsDataFrame with identical CRS. The convert_proj function can be used to achieve that.
-If weighting factors (weights.data) are generated using the wind_weights function, the user will not have to change the default argument names.
-Note that it is not necessary to run the nearest_point function prior to this one.
+Input data must be SpatialPoints with identical CRS. The convert_proj function can be used to achieve that.
+If weighting factors (weights.data) are generated using the wind_weights function, the user will not have to change the default argument names (weights.station, weights.direction, weights).
+Note that it is not necessary to run the nearest_point function first.
 }
 

@@ -20,7 +20,7 @@ One additional column (MeanFetch) to site.data with mean fetch distance of neare
 Set maximum fetch distance and assign mean fetch from nearest point.
 }
 \details{
-For this function to work, input data must be SpatialPointsDataFrame with identical CRS. The convert_proj function can be used to achieve that.
-Note that it is not necessary to run the nearest_point function prior to this one.
+Input data must be SpatialPoints with identical CRS. The convert_proj function can be used to achieve that.
+Note that it is not necessary to run the nearest_point function first.
 }
 
