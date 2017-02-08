@@ -19,25 +19,26 @@ knitr::opts_chunk$set(
 Fetch-based wave exposure model.
 
 ## Introduction
+These functions, along with data available for download from https://github.com/sebdalgarno/haidawave-data, are designed to facilitate calculation of wave exposure at sites in Haida Gwaii. Although the user may provide their own fetch and wind data from another region, we recommend checking out the 'waver' package (available on CRAN).
 
-These functions, in conjunction with data available for download from https://github.com/sebdalgarno/haidawave-data, are designed to facilitate calculation of wave exposure at sites in Haida Gwaii. Although the user may provide their own fetch and wind data from another region, we recommend checking out the 'waver' package (available on CRAN) for calculating wave exposure elsewhere.
-
-Two methods are provided for calculating fetch-based wave exposure at a set of sites: Mean Fetch and Wind-weighted Fetch. Three data sets are required as inputs: coordinates for a set of sites (supplied by the user), fetch data and wind data. For sites within Laskeek Bay, wind data (Cumshewa Head weather station, 2012-2016) and fetch data are provided within the package. For sites outside of Laskeek Bay but within Haida Gwaii, fetch and wind data may be retrieved by executing the following code (note 6 separate files are downloaded and bound together due to file import size limitations on github):
+Two methods are provided for calculating fetch-based wave exposure at a set of sites: Mean Fetch and Wind-weighted Fetch. Three data sets are required as inputs: coordinates for a set of sites (supplied by the user), fetch data and wind data. For sites within Laskeek Bay, wind data (Cumshewa Head weather station, 2012-2016) and fetch data are provided within the package. For sites outside of Laskeek Bay but within Haida Gwaii, fetch data (180 mb total) and wind data (18 mb) may be retrieved by executing the following code:
 
 ```{r, message = FALSE, warning = FALSE}
 library(readr)
-# read in and bind fetch data
+# get and bind fetch data (need to download several separate files due to file size upload limits in github repositories.)
 hg1 <- read_csv("https://raw.githubusercontent.com/sebdalgarno/haidawave-data/master/haidagwaii-fetch-1.csv")
 hg2 <- read_csv("https://raw.githubusercontent.com/sebdalgarno/haidawave-data/master/haidagwaii-fetch-2.csv")
 hg3 <- read_csv("https://raw.githubusercontent.com/sebdalgarno/haidawave-data/master/haidagwaii-fetch-3.csv")
 hg4 <- read_csv("https://raw.githubusercontent.com/sebdalgarno/haidawave-data/master/haidagwaii-fetch-4.csv")
 hg5 <- read_csv("https://raw.githubusercontent.com/sebdalgarno/haidawave-data/master/haidagwaii-fetch-5.csv")
 hg6 <- read_csv("https://raw.githubusercontent.com/sebdalgarno/haidawave-data/master/haidagwaii-fetch-6.csv")
+hg7 <- read_csv("https://raw.githubusercontent.com/sebdalgarno/haidawave-data/master/haidagwaii-fetch-7.csv")
+hg8 <- read_csv("https://raw.githubusercontent.com/sebdalgarno/haidawave-data/master/haidagwaii-fetch-8.csv")
 
-hgfetch <- rbind(hg1, hg2, hg3, hg4, hg5, hg6)
+hg_fetch <- rbind(hg1, hg2, hg3, hg4, hg5, hg6, hg7, hg8)
 
-# read in wind data
-hgwind <- read_csv("https://raw.githubusercontent.com/sebdalgarno/haidawave-data/master/wind-hg-1216.csv")
+# get wind data
+hg_wind <- read_csv("https://raw.githubusercontent.com/sebdalgarno/haidawave-data/master/wind-hg-1216.csv")
 
 ```
 
@@ -47,14 +48,14 @@ Points were generated within a GIS spaced 10m along 1:50,000 ShoreZone vector co
 The wind data set comprises hourly wind observations for all weather stations in Haida Gwaii with available data from 2012-2016. These data were taken from http://climate.weather.gc.ca/historical_data/search_historic_data_e.html). 
 
 ## References
-Murtojarvi, M., T. Suominen, H. Tolvanen, V. Leppanen, and O. S. Nevalainen. 2007. Quantifying distances from points to polygons: applications in determining fetch in coastal environments. Computers & Geosciences 33:843–852. 
-
 Howes, D., J. Harper, and E. Owens. 1994. Physical shore-zone mapping system for British Columbia. Resources Inventory Committee Publication 8:71.
+
+Murtojarvi, M., T. Suominen, H. Tolvanen, V. Leppanen, and O. S. Nevalainen. 2007. Quantifying distances from points to polygons: applications in determining fetch in coastal environments. Computers & Geosciences 33:843–852. 
 
 ## Utilisation
 
 ```{r, message = FALSE}
-library(HGfetch)
+library(haidawave)
 library(magrittr)
 library(ggplot2)
 library(ggthemes)
@@ -62,14 +63,17 @@ library(RColorBrewer)
 library(dplyr)
 
 # load sites, convert data.frame to SpatialPoints, transform projection to BC Albers
-data <- data.frame(Long = -131, Lat = 53)
-data %<>% convert_proj()
+data <- data.frame(X = -131.504, Y = 52.871)
+data %<>% convert_proj(data.x = 'X', data.y = 'Y')
 
 # convert wind data.frame to SpatialPointsDataFrame, transform projection to BC Albers
 cumshewa_wind %<>% convert_proj()
 
 # convert fetch data.frame to SpatialPointsDataFrame, maintain projection as BC Albers
 laskeek_fetch %<>% convert_proj(data.x = 'Easting', data.y = 'Northing', data.CRS="+init=epsg:3005", new.CRS="+init=epsg:3005")
+
+# check distance of nearest fetch point to site
+data %<>% nearest_point(laskeek_fetch)
 
 # find nearest fetch point, calculate mean fetch distance
 data %<>% mean_fetch(fetch.data = laskeek_fetch, max.distance = 200000)
@@ -93,17 +97,15 @@ lbsites %<>% wind_fetch(fetch.data = laskeek_fetch, weights.data = weights)
 reef <- as.data.frame(lbsites) %>% subset(Easting > 627000 & Northing < 890000)
 
 # Mean Fetch
-ggplot(reef) + geom_point(aes(x = Easting, y = Northing, color = meanfetch), size = 0.5) + coord_fixed() + 
+ggplot(reef) + geom_point(aes(x = Easting, y = Northing, color = MeanFetch), size = 0.5) + coord_fixed() + 
   theme_few() + labs(color = 'Mean Fetch\n(Km)\n', title = 'Reef Island,\nLaskeek Bay, British Columbia') + 
   theme(plot.title = element_text(size = 12, face = 'bold'), axis.title = element_text(size = 8, face = 'bold'), axis.text = element_text(size = 5), legend.title = element_text(size = 9, face = 'bold')) + scale_color_distiller(palette = "Spectral")
-
-
 
 ```
 
 ```{r}
 # Wind Fetch
-ggplot(reef) + geom_point(aes(x = Easting, y = Northing, color = windfetch), size = 0.5) + coord_fixed() + theme_few() + labs(color = 'Wind-weighted Fetch\n(Weighted Km)\n\nWind data:\nNov - Apr, 2016\n', title = 'Reef Island,\nLaskeek Bay, British Columbia') + theme(plot.title = element_text(size = 12, face = 'bold'),axis.title = element_text(size = 8, face = 'bold'), axis.text = element_text(size = 5), legend.title = element_text(size = 9, face = 'bold')) + scale_color_distiller(palette = "Spectral")
+ggplot(reef) + geom_point(aes(x = Easting, y = Northing, color = WindFetch), size = 0.5) + coord_fixed() + theme_few() + labs(color = 'Wind-weighted Fetch\n(Weighted Km)\n\nWind data:\nNov - Apr, 2016\n', title = 'Reef Island,\nLaskeek Bay, British Columbia') + theme(plot.title = element_text(size = 12, face = 'bold'),axis.title = element_text(size = 8, face = 'bold'), axis.text = element_text(size = 5), legend.title = element_text(size = 9, face = 'bold')) + scale_color_distiller(palette = "Spectral")
 ```
 
 ## Installation
@@ -111,7 +113,7 @@ ggplot(reef) + geom_point(aes(x = Easting, y = Northing, color = windfetch), siz
 To install from GitHub
 ```
 # install.packages("devtools")
-devtools::install_github("sebdalgarno/HGfetch")
+devtools::install_github("sebdalgarno/haidawave")
 ```
 
 ## Contribution

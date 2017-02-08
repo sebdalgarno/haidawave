@@ -21,17 +21,17 @@ wind_fetch(site.data, fetch.data, weights.data, weights.station = "Station",
 
 \item{weights}{A string of the name of the column containing wind weighting factors for each direction.}
 
-\item{max.distance}{An integer indicating desired maximum distance of fetch calculations.}
+\item{max.distance}{An integer indicating desired maximum distance of fetch calculations (in metres).}
 }
 \value{
-One additional column to site.data ('windfetch') with wind-altered summed fetch results.
+One additional column to site.data ('WindFetch') with wind-altered summed fetch results.
 }
 \description{
 Set maximum fetch distance, find fetch lines from nearest point, weight fetch lines according to conditions at nearest weather station, calculate wind-altered summed fetch.
 }
 \details{
 For this function to work, input data must be SpatialPointsDataFrame with identical CRS. The convert_proj function can be used to achieve that.
-Weighting factors (weights.data) should be generated first using the wind_weights function. Note that it is not necessary to run the nearest_point function prior to this one.
-To reduce processing time, subset fetch.data to a region encompassing your site.data.
+If weighting factors (weights.data) are generated using the wind_weights function, the user will not have to change the default argument names.
+Note that it is not necessary to run the nearest_point function prior to this one.
 }
 

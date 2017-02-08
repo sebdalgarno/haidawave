@@ -6,4 +6,5 @@
 #' @importFrom lubridate month year
 #' @importFrom stats na.omit
 #' @importFrom reshape2 melt
+#' @importFrom rgeos gDistance
 NULL

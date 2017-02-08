@@ -6,34 +6,27 @@
 #'
 #' @param data1 A SpatialPointsDataFrame.
 #' @param data2 A SpatialPointsDataFrame.
-#' @param data2.ID A string of the name of the column in data2 with ID. If IDs are not unique, function will remove duplicates.
 #'
-#' @return One additional column added to data1: 'nearest.ID'.
+#' @return One additional column added to data1 indicating distance to nearest point (in units of projection): 'NearestDistance'.
 #' @export
-nearest_point = function(data1, data2, data2.ID = "PointID") {
-  check_string(data2.ID)
-  check_unique(data2.ID)
+nearest_point = function(data1, data2) {
 
   if (is.spdf(data1) == FALSE | is.spdf(data2) == FALSE)
     stop('data sets must be SpatialPointsDataFrame! Use convert_proj function first.')
   if (same.crs(data1, data2) == FALSE)
     stop('data sets must have same CRS! Use convert_proj function first.')
 
-  check_cols(data2@data, colnames = data2.ID)
+  if(anyDuplicated(data2@coords[1]) > 0)
+    # extract only points with unique coordinates
+    point.unique <- remove.duplicates(data2)
 
-  tree <- SearchTrees::createTree(coordinates(data2))
+  if(anyDuplicated(data2@coords[1]) == 0)
+    point.unique <- data2
 
-  index <- SearchTrees::knnLookup(tree, newdat=coordinates(data1), k=1)
+    data1$NearestDistance <- round(apply(rgeos::gDistance(point.unique, data1, byid=TRUE), 1, min), 1)
 
-  data <- as.data.frame(data1)
+    return(data1)
+  }
 
-  data %<>% dplyr::mutate(nearest.ID = data2@data[index[,1], data2.ID])
-
-  coordinates(data) <- colnames(data1@coords)
-  proj4string(data) <- data1@proj4string
-
-  return(data)
-
-}
 
 

@@ -9,12 +9,12 @@ mean_fetch(site.data, fetch.data, max.distance = 2e+05)
 \arguments{
 \item{site.data}{A SpatialPointsDataFrame of sites requiring estimates of wave exposure.}
 
-\item{fetch.data}{A SpatialPointsDataFrame with columns containing unique ID, bearing, and fetch distance, along with coordinates.}
+\item{fetch.data}{A SpatialPointsDataFrame with fetch distance data.}
 
-\item{max.distance}{An integer indicating desired maximum dfetch distance.}
+\item{max.distance}{An integer indicating desired maximum fetch distance (in metres).}
 }
 \value{
-Two additional columns to site.data: 'nearest.pt' contains unique ID of nearest fetch.data point; 'sumfetch' contains summed fetch results.
+One additional column (MeanFetch) to site.data with mean fetch distance of nearest fetch point.
 }
 \description{
 Set maximum fetch distance and assign mean fetch from nearest point.

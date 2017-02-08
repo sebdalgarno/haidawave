@@ -1,5 +1,5 @@
 Package: haidawave
-Title: Fetch-based wave-exposure model.
+Title: Fetch-based wave-exposure model
 Version: 0.0.0.9001
 Date: 2017-01-24
 Authors@R: c(
@@ -18,7 +18,8 @@ Imports:
     dplyr,
     plyr,
     lubridate,
-    reshape2
+    reshape2,
+    rgeos
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

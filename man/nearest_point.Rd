@@ -4,17 +4,15 @@
 \alias{nearest_point}
 \title{Find nearest point.}
 \usage{
-nearest_point(data1, data2, data2.ID = "PointID")
+nearest_point(data1, data2)
 }
 \arguments{
 \item{data1}{A SpatialPointsDataFrame.}
 
 \item{data2}{A SpatialPointsDataFrame.}
-
-\item{data2.ID}{A string of the name of the column in data2 with ID. If IDs are not unique, function will remove duplicates.}
 }
 \value{
-One additional column added to data1: 'nearest.ID'.
+One additional column added to data1 indicating distance to nearest point (in units of projection): 'NearestDistance'.
 }
 \description{
 Find the nearest point and ID from one SpatialPointsDataFrame to another.

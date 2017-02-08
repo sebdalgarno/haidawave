@@ -1,4 +1,4 @@
 library(testthat)
-library(HGfetch)
+library(haidawave)
 
-test_check("HGfetch")
+test_check("haidawave")
