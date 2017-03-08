@@ -6,7 +6,7 @@
 #' Note that it is not necessary to run the nearest_point function first.
 #'
 #' @param site.data A SpatialPoints object containing sites that require estimates of wave exposure.
-#' @param fetch.data A SpatialPoints object containing fetch distance data.
+#' @param fetch.data A SpatialPointsDataFrame containing fetch distance data.
 #' @param max.distance An integer indicating desired maximum fetch distance (in metres).
 
 #' @return One additional column (MeanFetch) to site.data with mean fetch distance of nearest fetch point.
