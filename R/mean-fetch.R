@@ -5,8 +5,8 @@
 #' Input data must be SpatialPoints with identical CRS. The convert_proj function can be used to achieve that.
 #' Note that it is not necessary to run the nearest_point function first.
 #'
-#' @param site.data A SpatialPointsDataFrame of sites requiring estimates of wave exposure.
-#' @param fetch.data A SpatialPointsDataFrame with fetch distance data.
+#' @param site.data A SpatialPoints object containing sites that require estimates of wave exposure.
+#' @param fetch.data A SpatialPoints object containing fetch distance data.
 #' @param max.distance An integer indicating desired maximum fetch distance (in metres).
 
 #' @return One additional column (MeanFetch) to site.data with mean fetch distance of nearest fetch point.
