@@ -1,15 +1,15 @@
 #' Find nearest point.
 #'
-#' Find the nearest point and ID from one SpatialPointsDataFrame to another.
+#' For a given set of points, find the distance to the nearest point of another set.
 #'
 #' Note that the convert_proj function can be used first to convert data to SpatialPointsDataFrame and ensure identical CRS.
 #'
-#' @param data1 A SpatialPointsDataFrame.
-#' @param data2 A SpatialPointsDataFrame.
+#' @param data1 Object of class SpatialPoints or SpatialPointsDataFrame.
+#' @param data2 Object of class SpatialPoints or SpatialPointsDataFrame.
 #'
 #' @return One additional column added to data1 indicating distance to nearest point (in units of projection): 'NearestDistance'.
 #' @export
-nearest_point = function(data1, data2) {
+nearest_point = function(data1, data2, ID = FALSE) {
 
   if (is.spdf(data1) == FALSE | is.spdf(data2) == FALSE)
     stop('data sets must be SpatialPointsDataFrame! Use convert_proj function first.')
