@@ -6,7 +6,7 @@
 #' If weighting factors (weights.data) are generated using the wind_weights function, the user will not have to change the default argument names (weights.station, weights.direction, weights).
 #' Note that it is not necessary to run the nearest_point function first.
 #'
-#' @param site.data A SpatialPointsDataFrame of sites requiring estimates of wave exposure.
+#' @param site.data A SpatialPoints object containing sites that require estimates of wave exposure.
 #' @param fetch.data A SpatialPointsDataFrame of sites with a column indicating fetch bearing and a column indicating fetch distance.
 #' @param weights.data A SpatialPointsDataFrame including columns indicating station name, direction and weighting factor.
 #' @param weights.station A string of the name of the column containing names of weather stations.
