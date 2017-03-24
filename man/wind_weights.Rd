@@ -34,4 +34,3 @@ Calculate weighting factors according to proportion of time that wind blew in a 
 \details{
 For this function to work, input data must be SpatialPointsDataFrame. The convert_proj function can be used to achieve that. For use of output in other functions, CRS should be set to be identical to other inputs.
 }
-

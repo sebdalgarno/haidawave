@@ -9,7 +9,7 @@ wind_fetch(site.data, fetch.data, weights.data, weights.station = "Station",
   max.distance = 2e+05)
 }
 \arguments{
-\item{site.data}{A SpatialPointsDataFrame of sites requiring estimates of wave exposure.}
+\item{site.data}{A SpatialPoints object containing sites that require estimates of wave exposure.}
 
 \item{fetch.data}{A SpatialPointsDataFrame of sites with a column indicating fetch bearing and a column indicating fetch distance.}
 
@@ -34,4 +34,3 @@ Input data must be SpatialPoints with identical CRS. The convert_proj function c
 If weighting factors (weights.data) are generated using the wind_weights function, the user will not have to change the default argument names (weights.station, weights.direction, weights).
 Note that it is not necessary to run the nearest_point function first.
 }
-

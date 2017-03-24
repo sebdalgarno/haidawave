@@ -38,15 +38,19 @@ wind_weights = function(wind.data, DateTime = "DateTime", station = "Station", d
   wind %<>% subset(lubridate::year(DateTime) %in% years &
                      lubridate::month(DateTime) %in% months)
 
-  wind %<>% dplyr::mutate(dum=1)
+  wind %<>% dplyr::mutate_(dum=~1)
 
   colnames(wind)[colnames(wind) == speed] <- 'spd'
 
-  wind %<>% plyr::ddply(c(station, direction), summarize, Freq = sum(dum), Speed = mean(spd), Long = dplyr::first(Long), Lat = dplyr::first(Lat))
+  wind %<>% dplyr::group_by_(~station, ~direction) %>%
+    dplyr::summarize_(Freq = ~sum(dum), Speed = ~mean(spd), Long = ~dplyr::first(Long), Lat = ~dplyr::first(Lat)) %>%
+    dplyr::ungroup()
 
-  total <-  plyr::ddply(wind, station, summarize, total = sum(Freq))
+  total <- dplyr::group_by_(wind, ~station) %>%
+    dplyr::summarize_(total = ~sum(Freq)) %>%
+    dplyr::ungroup()
 
-  wind %<>% dplyr::mutate(Weight = Freq/total$total * Speed)
+  wind %<>% dplyr::mutate_(Weight = ~Freq/total$total * Speed)
 
   if (which.station == "All") {
 
@@ -61,7 +65,7 @@ wind_weights = function(wind.data, DateTime = "DateTime", station = "Station", d
 
     colnames(wind)[colnames(wind) == station] <- 'stat'
 
-    wind %<>% subset(stat %in% which.station)
+    wind %<>% dplyr::filter_(~stat %in% which.station)
 
     colnames(wind)[colnames(wind) == 'stat'] <- station
 

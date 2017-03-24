@@ -45,15 +45,15 @@ wind_fetch=function(site.data, fetch.data, weights.data, weights.station = "Stat
 
   fetch <- as.data.frame(fetch.near) %>%
 
-    mutate(ID = 1:nrow(fetch.near)) %>%
+    mutate_(ID = ~1:nrow(fetch.near)) %>%
 
     melt(id.vars=c("X", "Y", 'ID'), variable.name = "Bearing", value.name = "Distance") %>%
 
-    mutate(Bearing = as.character(Bearing),
-           Bearing = gsub("bearing", "", Bearing),
-           Bearing = as.numeric(Bearing)) %>%
+    mutate_(Bearing = ~as.character(Bearing),
+            Bearing = ~gsub("bearing", "", Bearing),
+            Bearing = ~as.numeric(Bearing)) %>%
 
-    mutate(Distance = replace(Distance, Distance > max.distance, max.distance))
+    mutate_(Distance = ~replace(Distance, Distance > max.distance, max.distance))
 
   coordinates(fetch) <- c('X', 'Y')
   proj4string(fetch) <- fetch.data@proj4string
@@ -63,16 +63,17 @@ wind_fetch=function(site.data, fetch.data, weights.data, weights.station = "Stat
 
   index.wind <- SearchTrees::knnLookup(tree.wind, newdat=coordinates(fetch), k=1)
 
-  fetch@data %<>% dplyr::mutate(Station = weights.data@data[index.wind[,1], weights.station])
+  fetch@data %<>% dplyr::mutate_(Station = ~weights.data@data[index.wind[,1], weights.station])
 
   fetch %<>% as.data.frame() %>%
 
     base::merge(weights.data@data, by.x = c('Station', 'Bearing'), by.y = c(weights.station, weights.direction)) %>%
 
     # calculate weighted distance
-    dplyr::mutate(weight.dist = Distance*weights)  %>%
+    dplyr::mutate_(weight.dist = ~Distance*weights)  %>%
 
-    plyr::ddply('ID', dplyr::summarize, windfetch = round(mean(weight.dist), 0))
+    dplyr::group_by_(~ID) %>% dplyr::summarize_(windfetch = ~round(mean(weight.dist), 0)) %>%
+    dplyr::ungroup()
 
   site.data$WindFetch <- fetch$windfetch
 

@@ -2,7 +2,7 @@
 #' @importFrom magrittr %<>% %>%
 #' @importFrom SearchTrees createTree knnLookup
 #' @importFrom plyr ddply summarize
-#' @importFrom dplyr mutate select
+#' @importFrom dplyr mutate_ select_
 #' @importFrom lubridate month year
 #' @importFrom stats na.omit
 #' @importFrom reshape2 melt

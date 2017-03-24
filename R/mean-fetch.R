@@ -31,17 +31,18 @@ mean_fetch = function(site.data, fetch.data, max.distance = 200000) {
 
   fetch <- as.data.frame(fetch.near) %>%
 
-    mutate(ID = 1:nrow(fetch.near)) %>%
+    mutate_(ID = ~1:nrow(fetch.near)) %>%
 
     melt(id.vars=c("X", "Y", 'ID'), variable.name = "Bearing", value.name = "Distance") %>%
 
-    mutate(Bearing = as.character(Bearing),
-           Bearing = gsub("bearing", "", Bearing),
-           Bearing = as.numeric(Bearing)) %>%
+    mutate_(Bearing = ~as.character(Bearing),
+           Bearing = ~gsub("bearing", "", Bearing),
+           Bearing = ~as.numeric(Bearing)) %>%
 
-    mutate(Distance = replace(Distance, Distance > 200000, 200000)) %>%
+    mutate_(Distance = ~replace(Distance, Distance > 200000, 200000)) %>%
 
-    plyr::ddply('ID', summarize, meanfetch = round(mean(Distance), 0))
+    dplyr::group_by_(~ID) %>% dplyr::summarize_(meanfetch = ~round(mean(Distance), 0)) %>%
+    dplyr::ungroup()
 
   site.data$MeanFetch <- fetch$meanfetch
 
