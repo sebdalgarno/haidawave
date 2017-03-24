@@ -20,8 +20,13 @@ Imports:
     lubridate,
     reshape2,
     rgeos
+Suggests:
+    ggplot2,
+    ggthemes,
+    RColorBrewer,
+    readr,
+    testthat
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.0.1
-Suggests: testthat
