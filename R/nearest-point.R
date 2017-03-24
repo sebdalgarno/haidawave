@@ -9,7 +9,7 @@
 #'
 #' @return One additional column added to data1 indicating distance to nearest point (in units of projection): 'NearestDistance'.
 #' @export
-nearest_point = function(data1, data2) {
+nearest_point <- function(data1, data2) {
 
   if (is.spdf(data1) == FALSE | is.spdf(data2) == FALSE)
     stop('data sets must be SpatialPointsDataFrame! Use convert_proj function first.')

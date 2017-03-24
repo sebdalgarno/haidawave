@@ -15,7 +15,7 @@
 #'
 #' @return Weighting factor for fetch bearings based on proportion of time that wind blew in that direction over defined timespan.
 #' @export
-wind_weights = function(wind.data, DateTime = "DateTime", station = "Station", direction = "Direction", speed = "Speed",
+wind_weights <- function(wind.data, DateTime = "DateTime", station = "Station", direction = "Direction", speed = "Speed",
                         years = 2012:2016, months = 1:12, which.station = "All") {
   check_string(direction)
   check_string(speed)

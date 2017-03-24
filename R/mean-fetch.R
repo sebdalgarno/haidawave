@@ -11,7 +11,7 @@
 
 #' @return One additional column (MeanFetch) to site.data with mean fetch distance of nearest fetch point.
 #' @export
-mean_fetch = function(site.data, fetch.data, max.distance = 200000) {
+mean_fetch <- function(site.data, fetch.data, max.distance = 200000) {
   check_number(max.distance)
 
   if(is.spdf(site.data) == FALSE|is.spdf(fetch.data)  == FALSE)
