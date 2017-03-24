@@ -7,11 +7,10 @@ library(devtools)
 rm(list = ls())
 
 cumshewa_wind <- read_csv('data-raw/wind-cumshewa-1216.csv')
-laskeek_fetch <- read_csv('data-raw/laskeekbay-fetch-5.csv', col_types = cols(Distance = col_double()))
+laskeek_fetch <- read_csv('data-raw/laskeekbay-fetch-5.csv')
 
 cumshewa_wind$DateTime %<>% force_tz(tzone = "Etc/GMT+8")
 
-# change column names
 laskeek_fetch %<>% select_(~-X1)
 colnames(laskeek_fetch) <- c('Easting', 'Northing', 'bearing5', 'bearing10', 'bearing15', 'bearing20','bearing25','bearing30','bearing35','bearing40','bearing45',
                              'bearing50','bearing55','bearing60','bearing65','bearing70','bearing75','bearing80','bearing85','bearing90','bearing95',
@@ -21,6 +20,8 @@ colnames(laskeek_fetch) <- c('Easting', 'Northing', 'bearing5', 'bearing10', 'be
                              'bearing250','bearing255','bearing260','bearing265','bearing270','bearing275','bearing280','bearing285','bearing290','bearing295',
                              'bearing300','bearing305','bearing310','bearing315','bearing320','bearing325','bearing330','bearing335','bearing340','bearing345',
                              'bearing350','bearing355', 'bearing360')
+
+cumshewa_wind %<>% rename(Longitude = Long, Latitude = Lat)
 
 use_data(cumshewa_wind, overwrite = TRUE)
 

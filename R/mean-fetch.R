@@ -8,43 +8,38 @@
 #' @param site.data A SpatialPoints object containing sites that require estimates of wave exposure.
 #' @param fetch.data A SpatialPointsDataFrame containing fetch distance data.
 #' @param max.distance An integer indicating desired maximum fetch distance (in metres).
-
 #' @return One additional column (MeanFetch) to site.data with mean fetch distance of nearest fetch point.
 #' @export
 mean_fetch <- function(site.data, fetch.data, max.distance = 200000) {
   check_number(max.distance)
 
-  if(is.spdf(site.data) == FALSE|is.spdf(fetch.data)  == FALSE)
+  if (is.spdf(site.data) == FALSE | is.spdf(fetch.data)  == FALSE)
     stop('Data sets must be SpatialPointsDataFrame! Use convert_proj function first.')
-  if(same.crs(site.data, fetch.data) == FALSE)
+  if (same.crs(site.data, fetch.data) == FALSE)
     stop('Data sets must have same CRS! Use convert_proj function first.')
-  if(max.distance > 200000)
+  if (max.distance > 200000)
     warning('Fetch distances are only accurate to a maximum of 200,000 m.')
 
   colnames(fetch.data@coords) <- c("X", "Y")
 
   tree <- SearchTrees::createTree(coordinates(fetch.data))
 
-  index <- SearchTrees::knnLookup(tree, newdat=coordinates(site.data), k=1)
+  index <- SearchTrees::knnLookup(tree, newdat = coordinates(site.data), k = 1)
 
   fetch.near <- fetch.data[index[,1], ]
 
   fetch <- as.data.frame(fetch.near) %>%
-
     mutate_(ID = ~1:nrow(fetch.near)) %>%
-
     melt(id.vars=c("X", "Y", 'ID'), variable.name = "Bearing", value.name = "Distance") %>%
-
     mutate_(Bearing = ~as.character(Bearing),
            Bearing = ~gsub("bearing", "", Bearing),
            Bearing = ~as.numeric(Bearing)) %>%
-
     mutate_(Distance = ~replace(Distance, Distance > 200000, 200000)) %>%
-
-    dplyr::group_by_(~ID) %>% dplyr::summarize_(meanfetch = ~round(mean(Distance), 0)) %>%
+    dplyr::group_by_(~ID) %>%
+    dplyr::summarize_(meanfetch = ~round(mean(Distance), 0)) %>%
     dplyr::ungroup()
 
   site.data$MeanFetch <- fetch$meanfetch
 
-  return(site.data)
+  site.data
 }

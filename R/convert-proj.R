@@ -1,20 +1,20 @@
 #' Convert projection.
 #'
-#' Convert a data.frame to SpatialPointsDataFrame with desired CRS.
+#' Convert a data.frame to a SpatialPointsDataFrame with desired CRS.
+#' The data.frame must contains the columns X and Y for the x and y coordinates.
 #'
 #' The default is to convert WGS84 Longitude/Latitude to BC Albers.
 #'
 #' @param data The data.frame to convert.
-#' @param data.x A string of the name of the column containing the longitude.
-#' @param data.y A string of the name of the column containing the latitude.
-#' @param data.CRS PROJ4 string defining current CRS of data.x and data.y.
+#' @param data.CRS PROJ4 string defining current CRS of data.
 #' @param new.CRS PROJ4 string of desired CRS.
 #'
-#' @return A SpatialPointsDataFrame with data.x and data.y transformed to desired CRS.
+#' @return A SpatialPointsDataFrame with X and Y transformed to desired CRS.
 #' @export
-convert_proj <- function(data, data.x = "Long", data.y = "Lat", data.CRS = "+init=epsg:4326", new.CRS = "+init=epsg:3005") {
-  check_string(data.x)
-  check_string(data.y)
+#' @examples
+#' convert_proj(data.frame(X = -131.504, Y = 52.871))
+convert_proj <- function(data, data.CRS = "+init=epsg:4326", new.CRS = "+init=epsg:3005") {
+  check_data2(data, values = c(X = c(1, NA), Y = c(1, NA)))
   check_string(data.CRS)
   check_string(new.CRS)
 
@@ -23,9 +23,7 @@ convert_proj <- function(data, data.x = "Long", data.y = "Lat", data.CRS = "+ini
 
   data %<>% as.data.frame()
 
-  check_cols(data, colnames = c(data.x, data.y))
-
-  sp::coordinates(data) <- c(data.x, data.y)
+  sp::coordinates(data) <- c("Long", "Lat")
   proj4string(data) <- sp::CRS(data.CRS)
   sp::spTransform(data, new.CRS)
 }

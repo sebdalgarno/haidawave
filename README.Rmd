@@ -19,13 +19,14 @@ knitr::opts_chunk$set(
 Fetch-based wave exposure model.
 
 ## Introduction
-These functions, along with data available for download from https://github.com/sebdalgarno/haidawave-data, are designed to facilitate calculation of wave exposure at sites in Haida Gwaii. Although the user may provide their own fetch and wind data from another region, we recommend checking out the 'waver' package (available on CRAN).
+These functions, along with data available for download from https://github.com/sebdalgarno/haidawave-data, are designed to facilitate calculation of wave exposure at sites in Haida Gwaii. Although the user may provide their own fetch and wind data from another region, we recommend checking out the [`waver`](https://github.com/pmarchand1/waver) package (available on CRAN).
 
 Two methods are provided for calculating fetch-based wave exposure at a set of sites: Mean Fetch and Wind-weighted Fetch. Three data sets are required as inputs: coordinates for a set of sites (supplied by the user), fetch data and wind data. For sites within Laskeek Bay, wind data (Cumshewa Head weather station, 2012-2016) and fetch data are provided within the package. For sites outside of Laskeek Bay but within Haida Gwaii, fetch data (180 mb total) and wind data (18 mb) may be retrieved by executing the following code:
 
 ```{r, message = FALSE, warning = FALSE, eval = FALSE}
 library(readr)
 # get and bind fetch data (need to download several separate files due to file size upload limits in github repositories.)
+
 hg1 <- read_csv("https://raw.githubusercontent.com/sebdalgarno/haidawave-data/master/haidagwaii-fetch-1.csv")
 hg2 <- read_csv("https://raw.githubusercontent.com/sebdalgarno/haidawave-data/master/haidagwaii-fetch-2.csv")
 hg3 <- read_csv("https://raw.githubusercontent.com/sebdalgarno/haidawave-data/master/haidagwaii-fetch-3.csv")
@@ -45,7 +46,7 @@ hg_wind <- read_csv("https://raw.githubusercontent.com/sebdalgarno/haidawave-dat
 ## Fetch and wind data
 Points were generated within a GIS spaced 10m along 1:50,000 ShoreZone vector coastline data (Howes et al. 1994). From each point, fetch distance (i.e. distance from point to nearest ShoreZone coastline) was calculated at 5 degree intervals using the java-based software - 'Vector_fetch' - developed by Mika Murtojarvi (Murtojarvi et al. 2007). Since ShoreZone vector coastline data were limited to BC, fetch distances are only accurate to 200,000 m. 
 
-The wind data set comprises hourly wind observations for all weather stations in Haida Gwaii with available data from 2012-2016. These data were taken from http://climate.weather.gc.ca/historical_data/search_historic_data_e.html). 
+The wind data set comprises hourly wind observations for all weather stations in Haida Gwaii with available data from 2012-2016. These data were taken from <http://climate.weather.gc.ca/historical_data/search_historic_data_e.html>. 
 
 ## References
 Howes, D., J. Harper, and E. Owens. 1994. Physical shore-zone mapping system for British Columbia. Resources Inventory Committee Publication 8:71.
@@ -67,10 +68,10 @@ data <- data.frame(X = -131.504, Y = 52.871)
 data %<>% convert_proj(data.x = 'X', data.y = 'Y')
 
 # convert wind data.frame to SpatialPointsDataFrame, transform projection to BC Albers
-cumshewa_wind %<>% convert_proj()
+cumshewa_wind <- convert_proj(haidawave::cumshewa_wind)
 
 # convert fetch data.frame to SpatialPointsDataFrame, maintain projection as BC Albers
-laskeek_fetch %<>% convert_proj(data.x = 'Easting', data.y = 'Northing', data.CRS="+init=epsg:3005", new.CRS="+init=epsg:3005")
+laskeek_fetch <- convert_proj(haidawave::laskeek_fetch, data.x = 'Easting', data.y = 'Northing', data.CRS="+init=epsg:3005", new.CRS="+init=epsg:3005")
 
 # check distance of nearest fetch point to site
 data %<>% nearest_point(laskeek_fetch)
