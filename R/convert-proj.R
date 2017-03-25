@@ -5,25 +5,26 @@
 #'
 #' The default is to convert WGS84 Longitude/Latitude to BC Albers.
 #'
-#' @param data The data.frame to convert.
+#' @param x The data.frame to convert.
 #' @param data.CRS PROJ4 string defining current CRS of data.
 #' @param new.CRS PROJ4 string of desired CRS.
 #'
-#' @return A SpatialPointsDataFrame with X and Y transformed to desired CRS.
+#' @return A tbl with X and Y transformed to desired CRS.
 #' @export
 #' @examples
-#' convert_proj(data.frame(X = -131.504, Y = 52.871))
-convert_proj <- function(data, data.CRS = "+init=epsg:4326", new.CRS = "+init=epsg:3005") {
-  check_data2(data, values = c(X = c(1, NA), Y = c(1, NA)))
+#' convert_proj(data.frame(Site = 1, X = c(-131.504), Y = c(52.871)))
+convert_proj <- function(x, data.CRS = "+init=epsg:4326", new.CRS = "+init=epsg:3005") {
+  check_data2(x, values = list(X = 1, Y = 1))
   check_string(data.CRS)
   check_string(new.CRS)
 
-  if (is.spdf(data) == TRUE)
-    warning('data is already a SpatialPointsDataFrame. Check that the coordinates were not already converted to a different CRS.')
+  if (is.spdf(x))
+    warning('x is already a SpatialPointsDataFrame. Check that the coordinates were not already converted to a different CRS.', call. = FALSE)
 
-  data %<>% as.data.frame()
+  x %<>% as.data.frame()
 
-  sp::coordinates(data) <- c("Long", "Lat")
-  proj4string(data) <- sp::CRS(data.CRS)
-  sp::spTransform(data, new.CRS)
+  sp::coordinates(x) <- c("X", "Y")
+  proj4string(x) <- sp::CRS(data.CRS)
+  x %<>% sp::spTransform(new.CRS) %<>% as.data.frame() %>% dplyr::as.tbl()
+  x
 }

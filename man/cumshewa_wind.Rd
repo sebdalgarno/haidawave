@@ -7,11 +7,11 @@
 \format{A tbl data frame:
 \describe{
   \item{Station}{The station name (chr).}
-  \item{DateTime}{The date time (time).}
-  \item{Direction}{The wind direction in degrees (int).}
-  \item{Speed}{The wind speed in km/hour (int).}
-  \item{Long}{The longitude of weather station, EPSG:4326 (dbl).}
-  \item{Lat}{The latitude of weather station, EPSG:4326 (dbl).}
+  \item{DateTime}{The date and time in Pacific Standard Time (UTC - 8) (dttm).}
+  \item{Direction}{The direction the wind is blowing from in degrees (dbl).}
+  \item{Speed}{The wind speed in km/hour (dbl).}
+  \item{Long}{The station's longitude in EPSG:4326 (dbl).}
+  \item{Lat}{The station's latitude in EPSG:4326 (dbl).}
 }}
 \usage{
 cumshewa_wind

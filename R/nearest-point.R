@@ -1,32 +1,25 @@
-#' Find nearest point.
+#' Joins y to x and y based on their X and Y coordinates.
 #'
-#' For a given set of points, find the distance to the nearest point of another set.
+#' Joins x to y based on minimising the euclidean distance between their X and Y coordinates.
+#' As a result each row in x is assigned the closest row in y.
 #'
-#' Note that the convert_proj function can be used first to convert data to SpatialPointsDataFrame and ensure identical CRS.
+#' Note the convert_proj function can be used to ensure the X and Y coordinates are in the same projection.
 #'
-#' @param data1 Object of class SpatialPoints or SpatialPointsDataFrame.
-#' @param data2 Object of class SpatialPoints or SpatialPointsDataFrame.
-#'
-#' @return One additional column added to data1 indicating distance to nearest point (in units of projection): 'NearestDistance'.
+#' @param x A data frame with the columns X and Y.
+#' @param y A data frame with the columns X and Y.
+#' @inheritParams dplyr::join
+#' @return The joined data frame with the additional column Distance indicating the distance between the X and Y coordinates.
 #' @export
-nearest_point <- function(data1, data2) {
+nearest_point <- function(x, y, suffix = c(".x", ".y")) {
+  check_data2(x, values = list(X = 1, Y = 1))
+  check_data2(y, values = list(X = 1, Y = 1))
 
-  if (is.spdf(data1) == FALSE | is.spdf(data2) == FALSE)
-    stop('data sets must be SpatialPointsDataFrame! Use convert_proj function first.')
-  if (same.crs(data1, data2) == FALSE)
-    stop('data sets must have same CRS! Use convert_proj function first.')
+  x$..ID <- 1:nrow(x)
 
-  if(anyDuplicated(data2@coords[1]) > 0)
-    # extract only points with unique coordinates
-    point.unique <- remove.duplicates(data2)
-
-  if(anyDuplicated(data2@coords[1]) == 0)
-    point.unique <- data2
-
-    data1$NearestDistance <- round(apply(rgeos::gDistance(point.unique, data1, byid=TRUE), 1, min), 1)
-
-    return(data1)
-  }
-
-
-
+  x %<>% merge(y, by = NULL, suffixes = suffix) %>%
+    dplyr::mutate_(Distance = ~sqrt((X.x - X.y)^2 + (Y.x - Y.y)^2)) %>%
+    plyr::ddply("..ID", function(x) dplyr::slice_(x, ~which.min(Distance))) %>%
+    dplyr::rename_(X = ~X.x, Y = ~Y.x) %>%
+    dplyr::select_(~-..ID)
+  dplyr::as.tbl(x)
+}

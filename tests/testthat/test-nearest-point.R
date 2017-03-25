@@ -1,14 +1,14 @@
-#context("nearest_point")
+context("nearest_point")
 
-#test_that("nearest_point", {
+test_that("nearest_point", {
 
- # data <- data.frame(Long = -131, Lat = 53)
+  x <- data.frame(X = c(10, 3), Y = c(0, 2))
+  y <- data.frame(X = c(5, 2), Y = c(0, 1))
 
-  #data <- convert_proj(data)
+  z <- nearest_point(x, y)
 
-  #data2 <- convert_proj(laskeek_fetch, data.CRS = '+init=epsg:3005')
-
-  #data2ID <- 'PointID'
-
-  #expect_is(nearest_point(data1, data2, data2ID), "SpatialPoints")
-#})
+  expect_is(z, "tbl")
+  expect_identical(z$X, x$X)
+  expect_identical(colnames(z), c("X", "Y", "X.y", "Y.y", "Distance"))
+  expect_identical(z$Distance, c(5, sqrt(2)))
+})

@@ -1,6 +1,8 @@
 library(magrittr)
+library(tidyr)
 library(dplyr)
 library(readr)
+library(stringr)
 library(lubridate)
 library(devtools)
 
@@ -21,7 +23,15 @@ colnames(laskeek_fetch) <- c('Easting', 'Northing', 'bearing5', 'bearing10', 'be
                              'bearing300','bearing305','bearing310','bearing315','bearing320','bearing325','bearing330','bearing335','bearing340','bearing345',
                              'bearing350','bearing355', 'bearing360')
 
-cumshewa_wind %<>% rename(Longitude = Long, Latitude = Lat)
+laskeek_fetch %<>% gather(Bearing, Fetch, -Easting, -Northing) %>%
+  mutate(Easting = as.numeric(Easting),
+         Northing = as.numeric(Northing),
+         Bearing = as.numeric(str_replace(Bearing, "bearing", ""))) %>%
+  filter(!is.na(Fetch))
+
+cumshewa_wind %<>% mutate(Direction = as.numeric(Direction),
+         Speed = as.numeric(Speed)) %>%
+  filter(!is.na(Direction), !is.na(Speed))
 
 use_data(cumshewa_wind, overwrite = TRUE)
 

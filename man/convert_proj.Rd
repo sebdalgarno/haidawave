@@ -4,26 +4,25 @@
 \alias{convert_proj}
 \title{Convert projection.}
 \usage{
-convert_proj(data, data.x = "Long", data.y = "Lat",
-  data.CRS = "+init=epsg:4326", new.CRS = "+init=epsg:3005")
+convert_proj(x, data.CRS = "+init=epsg:4326", new.CRS = "+init=epsg:3005")
 }
 \arguments{
-\item{data}{The data.frame to convert.}
+\item{x}{The data.frame to convert.}
 
-\item{data.x}{A string of the name of the column containing the longitude.}
-
-\item{data.y}{A string of the name of the column containing the latitude.}
-
-\item{data.CRS}{PROJ4 string defining current CRS of data.x and data.y.}
+\item{data.CRS}{PROJ4 string defining current CRS of data.}
 
 \item{new.CRS}{PROJ4 string of desired CRS.}
 }
 \value{
-A SpatialPointsDataFrame with data.x and data.y transformed to desired CRS.
+A tbl with X and Y transformed to desired CRS.
 }
 \description{
-Convert a data.frame to SpatialPointsDataFrame with desired CRS.
+Convert a data.frame to a SpatialPointsDataFrame with desired CRS.
+The data.frame must contains the columns X and Y for the x and y coordinates.
 }
 \details{
 The default is to convert WGS84 Longitude/Latitude to BC Albers.
+}
+\examples{
+convert_proj(data.frame(Site = 1, X = c(-131.504), Y = c(52.871)))
 }
