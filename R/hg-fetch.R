@@ -96,9 +96,11 @@ fetch_fetch <- function(n) {
 #' @export
 hg_fetch <- function() {
   fetch <- 1:8
+
   fetch %<>% plyr::ldply(fetch_fetch) %>%
-    tidyr::gather_("Bearing", "Fetch", paste0("bearing", seq(10, 360, by = 10)))
+    tidyr::gather_("Bearing", "Fetch", paste0("bearing", seq(5, 360, by = 5)))
+
   fetch$Bearing %<>% stringr::str_replace("bearing", "") %>%
     as.numeric()
-  fetch
+  dplyr::as.tbl(fetch)
 }
