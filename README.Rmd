@@ -16,43 +16,17 @@ knitr::opts_chunk$set(
 
 # haidawave
 
-Fetch-based wave exposure model.
-
 ## Introduction
-These functions, along with data available for download from https://github.com/sebdalgarno/haidawave-data, are designed to facilitate calculation of wave exposure at sites in Haida Gwaii. Although the user may provide their own fetch and wind data from another region, we recommend checking out the 'waver' package (available on CRAN).
 
-Two methods are provided for calculating fetch-based wave exposure at a set of sites: Mean Fetch and Wind-weighted Fetch. Three data sets are required as inputs: coordinates for a set of sites (supplied by the user), fetch data and wind data. For sites within Laskeek Bay, wind data (Cumshewa Head weather station, 2012-2016) and fetch data are provided within the package. For sites outside of Laskeek Bay but within Haida Gwaii, fetch data (180 mb total) and wind data (18 mb) may be retrieved by executing the following code:
+`haidawave` is as R package to calculate wave exposure (mean fetch) based on fetch and possibly wind data.
+In addition to the `mean_fetch`, `wind_weights` and `weighted_fetch` functions, which are demonstrated below,
+it also provides the `convert_proj` function to convert latitudes and longitudes
+to eastings and northings in BC Albers (or a projection of the users choice);
+the `nearest_point` function to join one data frame to another based on the shortest 
+euclidean distance between their coordinates; and the `hg_fetch` and `hg_wind` 
+to download the complete fetch and wind datasets for Haida Gwaii.
 
-```{r, message = FALSE, warning = FALSE, eval = FALSE}
-library(readr)
-# get and bind fetch data (need to download several separate files due to file size upload limits in github repositories.)
-hg1 <- read_csv("https://raw.githubusercontent.com/sebdalgarno/haidawave-data/master/haidagwaii-fetch-1.csv")
-hg2 <- read_csv("https://raw.githubusercontent.com/sebdalgarno/haidawave-data/master/haidagwaii-fetch-2.csv")
-hg3 <- read_csv("https://raw.githubusercontent.com/sebdalgarno/haidawave-data/master/haidagwaii-fetch-3.csv")
-hg4 <- read_csv("https://raw.githubusercontent.com/sebdalgarno/haidawave-data/master/haidagwaii-fetch-4.csv")
-hg5 <- read_csv("https://raw.githubusercontent.com/sebdalgarno/haidawave-data/master/haidagwaii-fetch-5.csv")
-hg6 <- read_csv("https://raw.githubusercontent.com/sebdalgarno/haidawave-data/master/haidagwaii-fetch-6.csv")
-hg7 <- read_csv("https://raw.githubusercontent.com/sebdalgarno/haidawave-data/master/haidagwaii-fetch-7.csv")
-hg8 <- read_csv("https://raw.githubusercontent.com/sebdalgarno/haidawave-data/master/haidagwaii-fetch-8.csv")
-
-hg_fetch <- rbind(hg1, hg2, hg3, hg4, hg5, hg6, hg7, hg8)
-
-# get wind data
-hg_wind <- read_csv("https://raw.githubusercontent.com/sebdalgarno/haidawave-data/master/wind-hg-1216.csv")
-
-```
-
-## Fetch and wind data
-Points were generated within a GIS spaced 10m along 1:50,000 ShoreZone vector coastline data (Howes et al. 1994). From each point, fetch distance (i.e. distance from point to nearest ShoreZone coastline) was calculated at 5 degree intervals using the java-based software - 'Vector_fetch' - developed by Mika Murtojarvi (Murtojarvi et al. 2007). Since ShoreZone vector coastline data were limited to BC, fetch distances are only accurate to 200,000 m. 
-
-The wind data set comprises hourly wind observations for all weather stations in Haida Gwaii with available data from 2012-2016. These data were taken from http://climate.weather.gc.ca/historical_data/search_historic_data_e.html). 
-
-## References
-Howes, D., J. Harper, and E. Owens. 1994. Physical shore-zone mapping system for British Columbia. Resources Inventory Committee Publication 8:71.
-
-Murtojarvi, M., T. Suominen, H. Tolvanen, V. Leppanen, and O. S. Nevalainen. 2007. Quantifying distances from points to polygons: applications in determining fetch in coastal environments. Computers & Geosciences 33:843–852. 
-
-## Utilisation
+## Demonstration
 
 ```{r, message = FALSE}
 library(haidawave)
@@ -60,57 +34,45 @@ library(magrittr)
 library(ggplot2)
 library(ggthemes)
 library(RColorBrewer)
+library(plyr)
 library(dplyr)
 
-# load sites, convert data.frame to SpatialPoints, transform projection to BC Albers
-data <- data.frame(X = -131.504, Y = 52.871)
-data %<>% convert_proj(data.x = 'X', data.y = 'Y')
+# only consider points for Reef Island, Laskeek Bay, British Coluumbia
+laskeek_fetch <- filter(haidawave::laskeek_fetch, Easting > 627000 & Northing < 890000)
 
-# convert wind data.frame to SpatialPointsDataFrame, transform projection to BC Albers
-cumshewa_wind %<>% convert_proj()
+# calculate mean fetch for each point
+fetch <- ddply(laskeek_fetch, c("Easting", "Northing"), mean_fetch)
 
-# convert fetch data.frame to SpatialPointsDataFrame, maintain projection as BC Albers
-laskeek_fetch %<>% convert_proj(data.x = 'Easting', data.y = 'Northing', data.CRS="+init=epsg:3005", new.CRS="+init=epsg:3005")
+# Plot mean Fetch
+gp <- ggplot(fetch) + geom_point(aes(x = Easting, y = Northing, color = Fetch), size = 0.5) +
+  coord_fixed() +
+  theme_few() +
+  scale_color_distiller(palette = "Spectral")
 
-# check distance of nearest fetch point to site
-data %<>% nearest_point(laskeek_fetch)
+print(gp)
 
-# find nearest fetch point, calculate mean fetch distance
-data %<>% mean_fetch(fetch.data = laskeek_fetch, max.distance = 200000)
+# get wind weights by station and direction
+cumshewa_wind <- ddply(haidawave::cumshewa_wind, c("Station"), wind_weights) %>% as.tbl()
 
-# find nearest weather station, calculate weighting factors (avg. speed * % frequency) for each bearing based on user-defined time period and set of stations.
-weights <- wind_weights(wind.data = cumshewa_wind, years = 2016, months = 9:4)
+cumshewa_wind
 
-# find nearest fetch point, calculate wind-weighted fetch
-data %<>% wind_fetch(fetch.data = laskeek_fetch, weights.data = weights, max.distance = 200000)
+# averge fetch bearings by 10 degree increments so consistent with wind directions
+laskeek_fetch %<>% mutate(Bearing = (Bearing + 5) %/% 10 * 10)
 
-```
+# bind wind weights
+laskeek_fetch %<>% left_join(cumshewa_wind, by = c("Bearing" = "Direction"))
 
-```{r}
-# plot Mean Fetch and Wind-weighted Fetch results for Reef Island, Laskeek Bay, British Coluumbia
-lbsites <- remove.duplicates(laskeek_fetch)
+laskeek_fetch
 
-lbsites %<>% mean_fetch(laskeek_fetch)
+# calculate mean weighted fetch
+laskeek_fetch %<>% ddply(c("Easting", "Northing"), weighted_fetch) %>% as.tbl()
 
-lbsites %<>% wind_fetch(fetch.data = laskeek_fetch, weights.data = weights)
-
-reef <- as.data.frame(lbsites) %>% subset(Easting > 627000 & Northing < 890000)
-
-# Mean Fetch
-ggplot(reef) + geom_point(aes(x = Easting, y = Northing, color = MeanFetch), size = 0.5) + coord_fixed() + 
-  theme_few() + labs(color = 'Mean Fetch\n(Km)\n', title = 'Reef Island,\nLaskeek Bay, British Columbia') + 
-  theme(plot.title = element_text(size = 12, face = 'bold'), axis.title = element_text(size = 8, face = 'bold'), axis.text = element_text(size = 5), legend.title = element_text(size = 9, face = 'bold')) + scale_color_distiller(palette = "Spectral")
-
-```
-
-```{r}
-# Wind Fetch
-ggplot(reef) + geom_point(aes(x = Easting, y = Northing, color = WindFetch), size = 0.5) + coord_fixed() + theme_few() + labs(color = 'Wind-weighted Fetch\n(Weighted Km)\n\nWind data:\nNov - Apr, 2016\n', title = 'Reef Island,\nLaskeek Bay, British Columbia') + theme(plot.title = element_text(size = 12, face = 'bold'),axis.title = element_text(size = 8, face = 'bold'), axis.text = element_text(size = 5), legend.title = element_text(size = 9, face = 'bold')) + scale_color_distiller(palette = "Spectral")
+print(gp %+% laskeek_fetch)
 ```
 
 ## Installation
 
-To install from GitHub
+To install the latest version from GitHub
 ```
 # install.packages("devtools")
 devtools::install_github("sebdalgarno/haidawave")
@@ -121,4 +83,3 @@ devtools::install_github("sebdalgarno/haidawave")
 Please report any [issues](https://github.com/sebdalgarno/haidawave/issues).
 
 [Pull requests](https://github.com/sebdalgarno/haidawave/pulls) are always welcome.
-

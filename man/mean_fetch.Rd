@@ -2,24 +2,29 @@
 % Please edit documentation in R/mean-fetch.R
 \name{mean_fetch}
 \alias{mean_fetch}
-\title{Calculate mean fetch at sites.}
+\title{Calculate fetch.}
 \usage{
-mean_fetch(site.data, fetch.data, max.distance = 2e+05)
+mean_fetch(x, max_fetch = 2 * 10^5)
 }
 \arguments{
+<<<<<<< HEAD
 \item{site.data}{A SpatialPoints object containing sites that require estimates of wave exposure.}
 
 \item{fetch.data}{A SpatialPointsDataFrame containing fetch distance data.}
 
 \item{max.distance}{An integer indicating desired maximum fetch distance (in metres).}
+=======
+\item{x}{A data frame with the column Fetch.}
+
+\item{max_fetch}{A number indicating the maximum fetch distance to consider.}
+>>>>>>> dev
 }
 \value{
-One additional column (MeanFetch) to site.data with mean fetch distance of nearest fetch point.
+A data frame with a single row and column Fetch indicating the mean fetch.
 }
 \description{
-Set maximum fetch distance and assign mean fetch from nearest point.
+Calculates mean fetch.
 }
-\details{
-Input data must be SpatialPoints with identical CRS. The convert_proj function can be used to achieve that.
-Note that it is not necessary to run the nearest_point function first.
+\examples{
+mean_fetch(haidawave::laskeek_fetch)
 }

@@ -6,17 +6,16 @@
 \title{Laskeek Bay fetch}
 \format{A tbl data frame:
 \describe{
-  \item{PointID}{Unique ID for all points (int).}
-  \item{Easting}{The easting of point, EPSG:3005 (dbl).}
-  \item{Northing}{The northing of point, EPSG:3005 (dbl).}
-  \item{Bearing}{The bearing in degress (int).}
-  \item{Distance}{The distance in m (dbl).}
+  \item{Easting}{The Easting in EPSG:3005 (dbl).}
+  \item{Northing}{The Northing in EPSG:3005 (dbl).}
+  \item{Bearing}{The bearing in degrees (dbl).}
+  \item{Fetch}{The fetch in m (dbl).}
 }}
 \usage{
 laskeek_fetch
 }
 \description{
-A tbl of fetch distances calculated at 5 degree intervals for points spaced 10m along the caostline of islands with Laskeek Bay, BC.
+A tbl of fetch distances at 5 degree intervals for points spaced 10m along the coastline of islands within Laskeek Bay, BC.
 }
 \details{
 Fetch distances were calculated using ShoreZone 1:50,000 vector coastline data and the 'Vector_fetch' software, developed by Mika Murtojarvi.

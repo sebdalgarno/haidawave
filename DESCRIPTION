@@ -1,11 +1,11 @@
 Package: haidawave
-Title: Fetch-based wave-exposure model
-Version: 0.0.0.9001
-Date: 2017-01-24
+Title: Wave exposure from fetch and wind data
+Version: 0.0.0.9002
+Date: 2017-03-24
 Authors@R: c(
     person("Sebastian", "Dalgarno", email = "seb.dalgarno@gmail.com", role = c("aut", "cre")),
     person("Joe", "Thorley", email = "joe@poissonconsulting.ca", role = "aut"))
-Description: Calculates wave exposure based on fetch and wind.
+Description: Calculates wave exposure based on fetch and wind data.
     Includes data for Haida Gwaii.
 Depends:
     R (>= 3.3.1),
@@ -17,11 +17,22 @@ Imports:
     SearchTrees,
     dplyr,
     plyr,
+    readr,
+    stringr,
+    tidyr,
     lubridate,
     reshape2,
     rgeos
+Suggests:
+    ggplot2,
+    ggthemes,
+    RColorBrewer,
+    testthat
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.0.1
+<<<<<<< HEAD
 Suggests: testthat
+=======
+>>>>>>> dev

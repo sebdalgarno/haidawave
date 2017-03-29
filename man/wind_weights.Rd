@@ -2,35 +2,23 @@
 % Please edit documentation in R/wind-weights.R
 \name{wind_weights}
 \alias{wind_weights}
-\title{Calculate wind weighting factors for each direction.}
+\title{Calculate wind weighting for each provided direction.}
 \usage{
-wind_weights(wind.data, DateTime = "DateTime", station = "Station",
-  direction = "Direction", speed = "Speed", years = 2012:2016,
-  months = 1:12, which.station = "All")
+wind_weights(x)
 }
 \arguments{
-\item{wind.data}{A SpatialPointsDataFrame containing wind data}
-
-\item{DateTime}{A string of the name of the column containing DateTime data of class POSIxct.}
-
-\item{station}{A string of the name of the column containing names of weather stations.}
-
-\item{direction}{A string of the name of the column containing wind direction at a given time.}
-
-\item{speed}{A string of the name of the column containing wind speed at a given time.}
-
-\item{years}{A vector of years to subset data by.}
-
-\item{months}{A vector of months to subset data by.}
-
-\item{which.station}{A vector of strings indicating which stations to subset. Default ("All") includes all stations.}
+\item{x}{A data frame with the columns Direction and Speed.}
 }
 \value{
-Weighting factor for fetch bearings based on proportion of time that wind blew in that direction over defined timespan.
+A tbl with the columns Direction, Frequency, Speed and Weight.
 }
 \description{
-Calculate weighting factors according to proportion of time that wind blew in a given direction over a defined period of years and months. Select which stations to include.
+Calculates weighting based on wind direction and speed.
+It takes a data frame and returns a tbl with the columns Direction,
+Frequency (number of intervals spent blowing in that direction),
+Speed (the average speed when blowing in that direction) and
+Weight ()
 }
-\details{
-For this function to work, input data must be SpatialPointsDataFrame. The convert_proj function can be used to achieve that. For use of output in other functions, CRS should be set to be identical to other inputs.
+\examples{
+wind_weights(haidawave::cumshewa_wind)
 }

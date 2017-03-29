@@ -2,21 +2,35 @@
 % Please edit documentation in R/nearest-point.R
 \name{nearest_point}
 \alias{nearest_point}
-\title{Find nearest point.}
+\title{Joins y to x and y based on their X and Y coordinates.}
 \usage{
-nearest_point(data1, data2)
+nearest_point(x, y, suffix = c(".x", ".y"))
 }
 \arguments{
+<<<<<<< HEAD
 \item{data1}{Object of class SpatialPoints or SpatialPointsDataFrame.}
 
 \item{data2}{Object of class SpatialPoints or SpatialPointsDataFrame.}
+=======
+\item{x}{A data frame with the columns X and Y.}
+
+\item{y}{A data frame with the columns X and Y.}
+
+\item{suffix}{If there are non-joined duplicate variables in \code{x} and
+\code{y}, these suffixes will be added to the output to diambiguate them.}
+>>>>>>> dev
 }
 \value{
-One additional column added to data1 indicating distance to nearest point (in units of projection): 'NearestDistance'.
+The joined data frame with the additional column Distance indicating the distance between the X and Y coordinates.
 }
 \description{
+<<<<<<< HEAD
 For a given set of points, find the distance to the nearest point of another set.
+=======
+Joins x to y based on minimising the euclidean distance between their X and Y coordinates.
+As a result each row in x is assigned the closest row in y.
+>>>>>>> dev
 }
 \details{
-Note that the convert_proj function can be used first to convert data to SpatialPointsDataFrame and ensure identical CRS.
+Note the convert_proj function can be used to ensure the X and Y coordinates are in the same projection.
 }
