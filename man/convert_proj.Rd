@@ -23,9 +23,6 @@ The data.frame must contains the columns X and Y for the x and y coordinates.
 \details{
 The default is to convert WGS84 Longitude/Latitude to BC Albers.
 }
-<<<<<<< HEAD
-=======
 \examples{
 convert_proj(data.frame(Site = 1, X = c(-131.504), Y = c(52.871)))
 }
->>>>>>> dev

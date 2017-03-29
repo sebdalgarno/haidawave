@@ -7,17 +7,9 @@
 mean_fetch(x, max_fetch = 2 * 10^5)
 }
 \arguments{
-<<<<<<< HEAD
-\item{site.data}{A SpatialPoints object containing sites that require estimates of wave exposure.}
-
-\item{fetch.data}{A SpatialPointsDataFrame containing fetch distance data.}
-
-\item{max.distance}{An integer indicating desired maximum fetch distance (in metres).}
-=======
 \item{x}{A data frame with the column Fetch.}
 
 \item{max_fetch}{A number indicating the maximum fetch distance to consider.}
->>>>>>> dev
 }
 \value{
 A data frame with a single row and column Fetch indicating the mean fetch.
