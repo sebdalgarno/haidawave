@@ -27,4 +27,3 @@ Convert a data.frame to SpatialPointsDataFrame with desired CRS.
 \details{
 The default is to convert WGS84 Longitude/Latitude to BC Albers.
 }
-

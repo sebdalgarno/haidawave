@@ -7,9 +7,9 @@
 mean_fetch(site.data, fetch.data, max.distance = 2e+05)
 }
 \arguments{
-\item{site.data}{A SpatialPointsDataFrame of sites requiring estimates of wave exposure.}
+\item{site.data}{A SpatialPoints object containing sites that require estimates of wave exposure.}
 
-\item{fetch.data}{A SpatialPointsDataFrame with fetch distance data.}
+\item{fetch.data}{A SpatialPointsDataFrame containing fetch distance data.}
 
 \item{max.distance}{An integer indicating desired maximum fetch distance (in metres).}
 }
@@ -23,4 +23,3 @@ Set maximum fetch distance and assign mean fetch from nearest point.
 Input data must be SpatialPoints with identical CRS. The convert_proj function can be used to achieve that.
 Note that it is not necessary to run the nearest_point function first.
 }
-

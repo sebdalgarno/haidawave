@@ -7,17 +7,16 @@
 nearest_point(data1, data2)
 }
 \arguments{
-\item{data1}{A SpatialPointsDataFrame.}
+\item{data1}{Object of class SpatialPoints or SpatialPointsDataFrame.}
 
-\item{data2}{A SpatialPointsDataFrame.}
+\item{data2}{Object of class SpatialPoints or SpatialPointsDataFrame.}
 }
 \value{
 One additional column added to data1 indicating distance to nearest point (in units of projection): 'NearestDistance'.
 }
 \description{
-Find the nearest point and ID from one SpatialPointsDataFrame to another.
+For a given set of points, find the distance to the nearest point of another set.
 }
 \details{
 Note that the convert_proj function can be used first to convert data to SpatialPointsDataFrame and ensure identical CRS.
 }
-

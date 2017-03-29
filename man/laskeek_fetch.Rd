@@ -22,4 +22,3 @@ A tbl of fetch distances calculated at 5 degree intervals for points spaced 10m 
 Fetch distances were calculated using ShoreZone 1:50,000 vector coastline data and the 'Vector_fetch' software, developed by Mika Murtojarvi.
 }
 \keyword{datasets}
-

@@ -23,4 +23,3 @@ A tbl of the hourly wind direction and speed at Cumshewa Head 2012 to 2016.
 Hourly wind measurements from \url{http://http://climate.weather.gc.ca/historical_data/search_historic_data_e.html}.
 }
 \keyword{datasets}
-
