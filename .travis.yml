@@ -17,5 +17,10 @@ r_packages:
 
 notifications:
   email:
+    recipients:
+      - seb@poissonconsulting.ca
+  slack:
+    rooms:
+      - poissonconsulting:BKjfn7jsVh8zXTu2rq7BEQEb
     on_success: change
     on_failure: always
