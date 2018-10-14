@@ -8,7 +8,7 @@ haidawave
 Introduction
 ------------
 
-`haidawave` is as R package to calculate wave exposure (mean fetch) based on fetch and possibly wind data. In addition to the `mean_fetch`, `wind_weights` and `weighted_fetch` functions, which are demonstrated below, it also provides the `convert_proj` function to convert latitudes and longitudes to eastings and northings in BC Albers (or a projection of the users choice); the `nearest_point` function to join one data frame to another based on the shortest euclidean distance between their coordinates; and the `hg_fetch` and `hg_wind` to download the complete fetch and wind datasets for Haida Gwaii.
+`haidawave` is an R package to calculate wave exposure (mean fetch) based on fetch and possibly wind data. In addition to the `mean_fetch`, `wind_weights` and `weighted_fetch` functions, which are demonstrated below, it also provides the `convert_proj` function to convert latitudes and longitudes to eastings and northings in BC Albers (or a projection of the users choice); the `nearest_point` function to join one data frame to another based on the shortest euclidean distance between their coordinates; and the `hg_fetch` and `hg_wind` to download the complete fetch and wind datasets for Haida Gwaii.
 
 Demonstration
 -------------
